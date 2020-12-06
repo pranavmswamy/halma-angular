@@ -3,7 +3,7 @@ export class Tile {
     private posY: number;
     private jumpParentTile: string;
         
-        public Tile(x: number, y: number, parent: string)
+        public constructor(x: number, y: number, parent: string)
         {
             this.posX = x;
             this.posY = y;

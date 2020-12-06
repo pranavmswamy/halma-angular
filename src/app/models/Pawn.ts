@@ -6,7 +6,7 @@ export class Pawn {
     private _inBlackHomeCamp: boolean;
     private _inWhiteHomeCamp: boolean;
 	
-	Pawn(x: number, y: number)
+	constructor(x: number, y: number)
 	{
 		this.posX = x;
 		this.posY = y;
