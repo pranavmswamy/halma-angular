@@ -27,7 +27,15 @@ export class GameState {
 		this.black = black;
 		this.previousMoves =   "" + nextMove; // check if it is getting assigned.
 		this.white = white;
-		this.visited = new boolean[16][16];
+		this.visited = [];
+
+		for(let i=0; i<16; i++) {
+			this.visited[i] = [];
+			for(let j=0; j<16; j++) {
+				this.visited[i][j] = false;
+			}
+		}
+
 		//terminalTest();
 	}
 	

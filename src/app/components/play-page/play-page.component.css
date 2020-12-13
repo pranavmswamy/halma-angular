@@ -1,0 +1,19 @@
+.transparent {
+    color: transparent;
+}
+
+button.tile-button {
+    border: none;
+    outline: none;
+    background-color:#79443b;
+}
+
+.black-pawn {
+    border-radius: 50%;
+    background-color: black;
+}
+
+.white-pawn {
+    border-radius: 50%;
+    background-color: white;
+}

@@ -1,0 +1,23 @@
+<div>
+    <div class="col-xs-12">
+
+        <div class="text-center">
+            <p class="display-3"> HALMA </p> 
+        </div>
+
+        <table class="mx-auto">
+            <tr *ngFor="let x of boardIterate; let i=index">
+                <td *ngFor="let y of boardIterate; let j=index"> 
+                    <button class="tile-button"> 
+                        <div [ngClass]="{   'black-pawn': board[i][j] == 'B', 
+                                            'white-pawn': board[i][j] == 'W',
+                                            'mx-2': true,
+                                            'my-2': true}">
+                            <p class="transparent"> {{ board[i][j] }} </p>
+                        </div>
+                    </button>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
