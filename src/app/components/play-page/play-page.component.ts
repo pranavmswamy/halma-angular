@@ -19,7 +19,7 @@ export class PlayPageComponent implements OnInit {
     for(let i=0; i<16; i++) {
       this.board[i] = [];
       for(let j=0; j<16; j++) {
-        this.board[i][j] = ".";
+        this.board[i][j] = "N";
       }
     }
    }
@@ -62,5 +62,11 @@ export class PlayPageComponent implements OnInit {
 		
 		for(let j=14; j<16;j++)
 			this.board[11][j] = "W";
-	}
+  }
+  
+
+  buttonOnClick(i:  number, j: number) {
+    console.log(i, j)
+  }
+
 }

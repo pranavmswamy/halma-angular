@@ -8,7 +8,7 @@
         <table class="mx-auto">
             <tr *ngFor="let x of boardIterate; let i=index">
                 <td *ngFor="let y of boardIterate; let j=index"> 
-                    <button class="tile-button"> 
+                    <button class="tile-button" (click)="buttonOnClick(i, j)">
                         <div [ngClass]="{   'black-pawn': board[i][j] == 'B', 
                                             'white-pawn': board[i][j] == 'W',
                                             'mx-2': true,
