@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { MinimaxService } from 'src/app/services/minimax.service';
 
 @Component({
   selector: 'app-play-page',
@@ -11,9 +12,12 @@ export class PlayPageComponent implements OnInit {
   boardIterate: boolean[]  = Array(16).fill(false);
   
   board: string[][];
+  firstClick = true;
 
 
-  constructor() {
+  constructor(
+    private minimaxService: MinimaxService
+  ) {
     this.board = [];
 
     for(let i=0; i<16; i++) {
@@ -66,7 +70,19 @@ export class PlayPageComponent implements OnInit {
   
 
   buttonOnClick(i:  number, j: number) {
-    console.log(i, j)
+      if(this.firstClick == true) {
+        // first click - validate and highlight options.
+        if(this.board[i][j] == 'B' || this.board[i][j] == 'W') {
+          this.minimaxService.generateValidMoves();
+        }
+        else {
+          // do nothing since user clicked on empty square.
+        }
+      }
+      else {
+        // second click - validate and move pawn.
+      }
+    
   }
 
 }
