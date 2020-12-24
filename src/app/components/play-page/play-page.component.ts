@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { GameState } from 'src/app/models/GameState';
+import { Pawn } from 'src/app/models/Pawn';
 import { MinimaxService } from 'src/app/services/minimax.service';
 
 @Component({
@@ -32,6 +34,34 @@ export class PlayPageComponent implements OnInit {
     // initialize board.
     this.initBlackHomeCamp();
     this.initWhiteHomeCamp();
+
+    //initialze service
+    // 1. initialize gamestate
+
+    let initboard: string[][] = [];
+    let whiteList: Pawn[] = [];
+    let blackList: Pawn[] = [];
+
+    for(let i=0; i<16; i++) {
+      initboard[i] = [];
+      for(let j=0; j<16; j++) {
+        if(this.board[i][j] == 'W') {
+          initboard[i][j] = 'W';
+          whiteList.push(new Pawn(i, j));
+        }
+        else if(this.board[i][j] == 'B') {
+          initboard[i][j] = 'B';
+          blackList.push(new Pawn(i, j));
+        }
+        else
+          initboard[i][j] = '.';
+      }
+    }
+
+    let start: GameState = new GameState("BLACK", initboard, null, "BLACK", blackList, whiteList, "");
+    this.minimaxService.updateGameState(start);
+    
+
   }
 
   private initBlackHomeCamp() {
@@ -73,14 +103,17 @@ export class PlayPageComponent implements OnInit {
       if(this.firstClick == true) {
         // first click - validate and highlight options.
         if(this.board[i][j] == 'B' || this.board[i][j] == 'W') {
-          this.minimaxService.generateValidMoves();
+          this.minimaxService.generateValidMoves(i, j);
         }
         else {
           // do nothing since user clicked on empty square.
         }
+        this.firstClick = false;
       }
       else {
-        // second click - validate and move pawn.
+        // second click - validate and move pawn, and then update gamestate in service.
+
+        this.firstClick = true;
       }
     
   }
