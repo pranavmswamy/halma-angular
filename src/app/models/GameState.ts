@@ -1456,10 +1456,14 @@ export class GameState {
 	public getJumpsIndices(x: number, y: number) {
 		let newJumpMoves = new Array();
 		
+		this.jumpQueue.push(new Tile(x, y, ""));
+		console.log("Before while loop")
 		while(this.jumpQueue.length != 0)
 		{
+			console.log("Entered beginning of while loop")
 			let t = this.jumpQueue.shift();
 			let i = t.getX(), j = t.getY();
+			console.log(i, " ", j)
 			//----------------------trying camp oppnt----
 			if(this.player == "BLACK")
 			{
@@ -1674,6 +1678,7 @@ export class GameState {
 			}
 			//----------------------
 		}
+		console.log("Exited while loop")
 		return newJumpMoves;
 	}
 

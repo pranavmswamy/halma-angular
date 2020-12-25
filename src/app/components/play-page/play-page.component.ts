@@ -14,20 +14,31 @@ export class PlayPageComponent implements OnInit {
   boardIterate: boolean[]  = Array(16).fill(false);
   
   board: string[][];
+  highlighted: boolean[][]
   firstClick = true;
+  candidatePawnPosition = null;
 
 
   constructor(
     private minimaxService: MinimaxService
   ) {
     this.board = [];
-
     for(let i=0; i<16; i++) {
       this.board[i] = [];
       for(let j=0; j<16; j++) {
-        this.board[i][j] = "N";
+        this.board[i][j] = ".";
       }
     }
+
+    this.highlighted = []
+    for(let i=0; i<16; i++) {
+      this.highlighted[i] = [];
+      for(let j=0; j<16; j++) {
+        this.highlighted[i][j] = false;
+      }
+    }
+
+
    }
 
   ngOnInit(): void {
@@ -97,24 +108,113 @@ export class PlayPageComponent implements OnInit {
 		for(let j=14; j<16;j++)
 			this.board[11][j] = "W";
   }
-  
+
+  /**
+   * Method to clear highlighted cells on the board.
+   * When the user clicks on a cell, it clears the previously highlighted cells if any to make way
+   * to highlight the new moves.
+   */
+  clearHighlightedCells() {
+
+    for(let i=0; i<16; i++) {
+      for(let j=0; j< 16; j++) {
+        this.highlighted[i][j] = false;
+      }
+    }
+  }
+
+  deepCopyBoard(): string[][] {
+
+    let newBoard: string[][] = [];
+
+    for(let i=0; i<16; i++) {
+      newBoard[i] = []
+      for(let j=0; j<16; j++) {
+        newBoard[i][j] = this.board[i][j];
+      }
+    }
+    return newBoard;
+  }
+
+  getNextGameState(): GameState {
+
+    let nextGameState: GameState;
+
+    let nextBoard = this.deepCopyBoard();
+    let whiteList: Pawn[] = [];
+    let blackList: Pawn[] = [];
+
+    for(let i=0; i<16; i++) {
+      for(let j=0; j<16; j++) {
+        if(this.board[i][j] == 'W') {
+          whiteList.push(new Pawn(i, j));
+        }
+        else if(this.board[i][j] == 'B') {
+          blackList.push(new Pawn(i, j));
+        }
+      }
+    }
+
+    nextGameState = new GameState("BLACK", nextBoard, this.minimaxService.currentGamestate, "BLACK", blackList, whiteList, "");
+    return nextGameState;
+  }
 
   buttonOnClick(i:  number, j: number) {
-      if(this.firstClick == true) {
-        // first click - validate and highlight options.
-        if(this.board[i][j] == 'B' || this.board[i][j] == 'W') {
-          this.minimaxService.generateValidMoves(i, j);
-        }
-        else {
-          // do nothing since user clicked on empty square.
-        }
-        this.firstClick = false;
+
+    if(this.firstClick == true) {
+
+      // clears highlighted cells first, if any.
+      this.clearHighlightedCells();
+
+      // cache to store pawn to move next if chosen.
+      this.candidatePawnPosition = null;
+      this.candidatePawnPosition = [i,j]
+      
+      // first click - validate and highlight options.
+      if(this.board[i][j] == 'B' || this.board[i][j] == 'W') {
+        let validMoves = this.minimaxService.generateValidMoves(i, j);
+        validMoves.forEach(position => {
+          this.highlighted[position[0]][position[1]] = true;
+        });
       }
       else {
-        // second click - validate and move pawn, and then update gamestate in service.
+        // do nothing since user clicked on empty square.
+      }
+      this.firstClick = false;
+    }
+    else {
+      // second click - validate and move pawn, and then update gamestate in service.
+      if(this.highlighted[i][j] == true) {
+        // move pawn to that place
+        this.board[i][j] = this.board[this.candidatePawnPosition[0]][this.candidatePawnPosition[1]];
+        this.board[this.candidatePawnPosition[0]][this.candidatePawnPosition[1]] = '.';
+        this.clearHighlightedCells();
+
+        // update game state and send to minimax service
+        let nextGameState = this.getNextGameState();
+        this.minimaxService.updateGameState(nextGameState);
+
+        //check if gamestate got updated.
+        console.log(this.board)
+        console.log(this.minimaxService.currentGamestate.getBoard())
+
+        //WHILE LOOP infinite jumpIndices. check.
+
+        // make AI play
+        // update gamestate again and display.
+
 
         this.firstClick = true;
+        this.candidatePawnPosition = null;
       }
+      else if(this.board[i][j] != '.') {
+        this.firstClick = true;
+        this.buttonOnClick(i, j);
+      }
+      else {
+        // clicked on empty.
+      }
+    }
     
   }
 

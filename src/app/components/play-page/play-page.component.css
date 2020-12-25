@@ -5,7 +5,15 @@
 button.tile-button {
     border: none;
     outline: none;
-    background-color:#79443b;
+    
+}
+
+.normal-bg {
+    background-color:#e0ca65;
+}
+
+.highlighted {
+    background-color:#cf7124;
 }
 
 .black-pawn {
