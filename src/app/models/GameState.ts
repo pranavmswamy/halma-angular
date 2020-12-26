@@ -370,6 +370,10 @@ export class GameState {
 		return terminalTest;
 		//end bottomright
 	}
+
+	setPlayer(player) {
+		this.player = player;
+	}
 	
 	public calculateActions() : GameState[]
 	{
@@ -918,11 +922,15 @@ export class GameState {
 	
 	public getBoardCopy(board : string[][]): string[][]
 	{
-		let childBoard: string[][] = new String[16][16]; //CHECK
-		for(let i = 0;i<childBoard.length; i++)
-			for(let j=0;j<childBoard.length; j++)
-				childBoard[i][j] = "" + board[i][j];
-		return childBoard;
+		let newBoard: string[][] = [];
+
+		for(let i=0; i<16; i++) {
+			newBoard[i] = []
+			for(let j=0; j<16; j++) {
+				newBoard[i][j] = this.board[i][j];
+			}
+		}
+		return newBoard;
 	}
 	
 	public addLegalMove(startX: number, startY: number, endX: number, endY: number, previousMoves: string): GameState
@@ -1457,13 +1465,14 @@ export class GameState {
 		let newJumpMoves = new Array();
 		
 		this.jumpQueue.push(new Tile(x, y, ""));
+		this.visited[x][y] = true;
 		console.log("Before while loop")
 		while(this.jumpQueue.length != 0)
 		{
 			console.log("Entered beginning of while loop")
 			let t = this.jumpQueue.shift();
 			let i = t.getX(), j = t.getY();
-			console.log(i, " ", j)
+			console.log("i, j, visited:", i, j,  this.visited[i][j])
 			//----------------------trying camp oppnt----
 			if(this.player == "BLACK")
 			{
@@ -1532,41 +1541,49 @@ export class GameState {
 					{
 						newJumpMoves.push([i-2, j-2]); 
 						this.jumpQueue.push(new Tile(i-2,j-2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i-2) + "," + (j-2) + "\n"));
+						this.visited[i-2][j-2] = true;
 					}
 					if(this.isValidPosition(i-2,j) && this.containsPawn(i-1,j) && !this.visited[i-2][j])
 					{
 						newJumpMoves.push([i-2, j]);
 						this.jumpQueue.push(new Tile(i-2,j,t.getPreviousMoves()+"J " + i + "," + j + " " + (i-2) + "," + (j) + "\n"));
+						this.visited[i-2][j] = true;
 					}
 					if(this.isValidPosition(i-2,j+2) && this.containsPawn(i-1,j+1) && !this.visited[i-2][j+2])
 					{
 						newJumpMoves.push([i-2, j+2]);
 						this.jumpQueue.push(new Tile(i-2,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i-2) + "," + (j+2) + "\n"));
+						this.visited[i-2][j+2] = true;
 					}
 					if(this.isValidPosition(i,j+2) && this.containsPawn(i,j+1) && !this.visited[i][j+2])
 					{
 						newJumpMoves.push([i, j+2]);
 						this.jumpQueue.push(new Tile(i,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i) + "," + (j+2) + "\n"));
+						this.visited[i][j+2] = true;
 					}
 					if(this.isValidPosition(i+2,j+2) && this.containsPawn(i+1,j+1) && !this.visited[i+2][j+2])
 					{
 						newJumpMoves.push([i+2, j+2]);
 						this.jumpQueue.push(new Tile(i+2,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j+2) + "\n"));
+						this.visited[i+2][j+2] = true;
 					}
 					if(this.isValidPosition(i+2,j) && this.containsPawn(i+1,j) && !this.visited[i+2][j])
 					{
 						newJumpMoves.push([i+2, j]);
 						this.jumpQueue.push(new Tile(i+2,j,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j) + "\n"));
+						this.visited[i+2][j] = true;
 					}
 					if(this.isValidPosition(i+2,j-2) && this.containsPawn(i+1,j-1) && !this.visited[i+2][j-2])
 					{
 						newJumpMoves.push([i+2, j-2]);
 						this.jumpQueue.push(new Tile(i+2,j-2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j-2) + "\n"));
+						this.visited[i+2][j-2] = true;
 					}
 					if(this.isValidPosition(i,j-2) && this.containsPawn(i, j-1) && !this.visited[i][j-2])
 					{
 						newJumpMoves.push([i, j-2]);
 						this.jumpQueue.push(new Tile(i,j-2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i) + "," + (j-2) + "\n"));
+						this.visited[i][j-2] = true;
 					}
 				} 
 			}
@@ -1638,41 +1655,49 @@ export class GameState {
 					{
 						newJumpMoves.push([i-2, j-2]); 
 						this.jumpQueue.push(new Tile(i-2,j-2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i-2) + "," + (j-2) + "\n"));
+						this.visited[i-2][j-2] = true;
 					}
 					if(this.isValidPosition(i-2,j) && this.containsPawn(i-1,j) && !this.visited[i-2][j])
 					{
 						newJumpMoves.push([i-2, j]);
 						this.jumpQueue.push(new Tile(i-2,j,t.getPreviousMoves()+"J " + i + "," + j + " " + (i-2) + "," + (j) + "\n"));
+						this.visited[i-2][j] = true;
 					}
 					if(this.isValidPosition(i-2,j+2) && this.containsPawn(i-1,j+1) && !this.visited[i-2][j+2])
 					{
 						newJumpMoves.push([i-2, j+2]);
 						this.jumpQueue.push(new Tile(i-2,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i-2) + "," + (j+2) + "\n"));
+						this.visited[i-2][j+2] = true;
 					}
 					if(this.isValidPosition(i,j+2) && this.containsPawn(i,j+1) && !this.visited[i][j+2])
 					{
 						newJumpMoves.push([i, j+2]);
 						this.jumpQueue.push(new Tile(i,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i) + "," + (j+2) + "\n"));
+						this.visited[i][j+2] = true;
 					}
 					if(this.isValidPosition(i+2,j+2) && this.containsPawn(i+1,j+1) && !this.visited[i+2][j+2])
 					{
 						newJumpMoves.push([i+2, j+2]);
 						this.jumpQueue.push(new Tile(i+2,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j+2) + "\n"));
+						this.visited[i+2][j+2] = true;
 					}
 					if(this.isValidPosition(i+2,j) && this.containsPawn(i+1,j) && !this.visited[i+2][j])
 					{
 						newJumpMoves.push([i+2, j]);
 						this.jumpQueue.push(new Tile(i+2,j,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j) + "\n"));
+						this.visited[i+2][j] = true;
 					}
 					if(this.isValidPosition(i+2,j-2) && this.containsPawn(i+1,j-1) && !this.visited[i+2][j-2])
 					{
 						newJumpMoves.push([i+2, j-2]);
 						this.jumpQueue.push(new Tile(i+2,j-2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j-2) + "\n"));
+						this.visited[i+2][j-2] = true;
 					}
 					if(this.isValidPosition(i,j-2) && this.containsPawn(i, j-1) && !this.visited[i][j-2])
 					{
 						newJumpMoves.push([i, j-2]);
 						this.jumpQueue.push(new Tile(i,j-2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i) + "," + (j-2) + "\n"));
+						this.visited[i][j-2] = true;
 					}
 				}
 			}

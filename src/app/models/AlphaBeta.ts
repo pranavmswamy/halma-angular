@@ -74,13 +74,14 @@ export class AlphaBeta {
 		return v;
 	}
 	
-	public runAlphaBeta(initialState: GameState, depth: number)
+	public runAlphaBeta(initialState: GameState, depth: number): GameState
 	{
 		this.depth = depth; 
 		let abReturnedValue =  this.maxValue(depth, initialState, Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY);
 		//System.out.println(" ab returned = " + abReturnedValue);
 		
-	    let nextGameState: GameState = null, gameOverState: GameState = null;
+		let nextGameState: GameState = null, gameOverState: GameState = null;
+		let returnableGameState = null;
         
         let randomSelect: GameState[] = new Array();
 		
@@ -105,15 +106,18 @@ export class AlphaBeta {
 		{
             localStorage.setItem("next_moves", gameOverState.getPreviousMoves().trim())
             console.log("next_moves = ", gameOverState.getPreviousMoves().trim())
-            //writeFile.writeMoveToFile(gameOverState.getPreviousMoves().trim());
+			//writeFile.writeMoveToFile(gameOverState.getPreviousMoves().trim());
+			returnableGameState = gameOverState;
 		}
 		else
 		{
             nextGameState = randomSelect[Math.floor(Math.random() * randomSelect.length)];
             localStorage.setItem("next_moves", nextGameState.getPreviousMoves().trim())
             console.log("next_moves = ", nextGameState.getPreviousMoves().trim())
-            //writeFile.writeMoveToFile(nextGameState.getPreviousMoves().trim());
+			//writeFile.writeMoveToFile(nextGameState.getPreviousMoves().trim());
+			returnableGameState = nextGameState;
 		}
 		//writeFile.closeFile();
+		return returnableGameState;
 	}	
 }

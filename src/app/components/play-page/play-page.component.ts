@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AlphaBeta } from 'src/app/models/AlphaBeta';
 import { GameState } from 'src/app/models/GameState';
 import { Pawn } from 'src/app/models/Pawn';
 import { MinimaxService } from 'src/app/services/minimax.service';
@@ -123,6 +124,14 @@ export class PlayPageComponent implements OnInit {
     }
   }
 
+  updateBoard(board) {
+    for(let i=0; i<16; i++) {
+      for(let j=0; j< 16; j++) {
+        this.board[i][j] = board[i][j];
+      }
+    }
+  }
+
   deepCopyBoard(): string[][] {
 
     let newBoard: string[][] = [];
@@ -192,17 +201,22 @@ export class PlayPageComponent implements OnInit {
 
         // update game state and send to minimax service
         let nextGameState = this.getNextGameState();
+        nextGameState.setPlayer("WHITE");
         this.minimaxService.updateGameState(nextGameState);
-
         //check if gamestate got updated.
-        console.log(this.board)
-        console.log(this.minimaxService.currentGamestate.getBoard())
+        //console.log(this.board)
+        //console.log(this.minimaxService.currentGamestate.getBoard())
 
-        //WHILE LOOP infinite jumpIndices. check.
 
         // make AI play
-        // update gamestate again and display.
+        console.log("Handing over to AI")
+        let AIreturnedGamestate = new AlphaBeta().runAlphaBeta(this.minimaxService.currentGamestate, 3);
+        console.log("AI returned: ", AIreturnedGamestate.getBoard())
 
+        // update gamestate again and display.
+        this.minimaxService.updateGameState(AIreturnedGamestate);
+        this.minimaxService.currentGamestate.setPlayer("BLACK");
+        this.updateBoard(this.minimaxService.currentGamestate.getBoard());
 
         this.firstClick = true;
         this.candidatePawnPosition = null;
