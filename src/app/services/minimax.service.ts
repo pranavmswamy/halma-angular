@@ -23,7 +23,7 @@ export class MinimaxService {
 		let y = col
 		this.currentGamestate.getJumpQ().push(new Tile(x,y,"")); // check
     this.currentGamestate.getVisitedArray()[x][y] = true;
-    this.currentGamestate.initBehindTopLeftPlacesTrue(x, y);
+    this.currentGamestate.visitBehindPlaces(x, y, true);
     //collect all jump nodes and add it to bfsq and actions
     let newJumpMoves = new Array();
     newJumpMoves = this.currentGamestate.getJumpsIndices(x, y);

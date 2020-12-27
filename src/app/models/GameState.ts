@@ -27,8 +27,8 @@ export class GameState {
 		this.black = black;
 		this.previousMoves =   "" + nextMove; // check if it is getting assigned.
 		this.white = white;
+		
 		this.visited = [];
-
 		for(let i=0; i<16; i++) {
 			this.visited[i] = [];
 			for(let j=0; j<16; j++) {
@@ -371,210 +371,52 @@ export class GameState {
 		//end bottomright
 	}
 
-	setPlayer(player) {
+	public setPlayer(player) {
 		this.player = player;
 	}
-	
+
+	/**
+	 * Calculates all next game states for the player and returns it in a list of next gamestate objects.
+	 */
 	public calculateActions() : GameState[]
 	{
 		let actions: GameState[] = new Array();
+		let pawnsList = [];
+
+		if(this.getPlayer() == "BLACK") {
+			pawnsList = this.getBlacksList();
+		}
+		else {
+			pawnsList = this.getWhitesList();
+		}
+
+		for(let p of pawnsList) {
+			
+			this.markAllVisitedFalse(); //mark all i,j as false;visited.
+			let x = p.getX();
+			let y = p.getY();
+			this.getJumpQ().push(new Tile(x,y,""));
+			this.getVisitedArray()[x][y] = true;
+
+			if(this.getPlayer() == "BLACK") {
+				this.visitBehindPlaces(x, y, true);
+			}
+			else {
+				this.visitBehindPlaces(x, y, false);
+			}
+
+			// collect all adj nodes and add it to actions
+			let newAdj8Moves: GameState[] = new Array();
+			newAdj8Moves = this.checkAdjEightPlaces(x, y);
+			actions = actions.concat(newAdj8Moves);
+
+			//collect all jump nodes and add it to actions
+			let newJumpMoves : GameState[] = new Array();
+			newJumpMoves = this.performJumps(x, y);
+			actions = actions.concat(newJumpMoves);
+
+		}
 		
-		if(this.getPlayer() == "BLACK")
-		{
-			//--------trying remove from home camp first-------
-			if(this.pawnsPresentInBlackHomeCamp())
-			{
-				let gotMoves = 0;
-				for(let p of this.getBlacksList())
-				{
-					if(p.inBlackHomeCamp())
-					{
-						this.markAllVisitedFalse();
-						let x = p.getX();
-						let y = p.getY();
-						this.getJumpQ().push(new Tile(x,y,"")); // check
-						this.getVisitedArray()[x][y] = true;
-						this.initBehindTopLeftPlacesTrue(x, y);
-						//collect all 8-adj positions in an arraylist, add it to bfsQ and actions
-						let newAdj8Moves: GameState[] = new Array();
-						newAdj8Moves = this.checkAdjEightPlaces(x, y);
-						for(let state of newAdj8Moves)
-						{
-								gotMoves++;
-							//gameStateBfsQ.add(state);
-							actions.push(state);
-						}
-						//collect all jump nodes and add it to bfsq and actions
-						let newJumpMoves: GameState[] = new Array();
-						newJumpMoves = this.performJumps(x, y);
-						for(let state of newJumpMoves)
-						{
-							gotMoves++;
-							//gameStateBfsQ.add(state);
-							actions.push(state);
-						}
-					}
-				}
-				if(gotMoves == 0)
-				{
-					//normal code again.
-					for(let  p of this.getBlacksList())
-					{
-						this.markAllVisitedFalse();//mark all i,j as false;visited.
-						let x = p.getX();
-						let y = p.getY();
-						this.getJumpQ().push(new Tile(x,y,"")); // check
-						this.getVisitedArray()[x][y] = true;
-						this.initBehindTopLeftPlacesTrue(x, y);
-						//collect all 8-adj positions in an arraylist, add it to bfsQ and actions
-						let newAdj8Moves: GameState[] = new Array();
-						newAdj8Moves = this.checkAdjEightPlaces(x, y);
-						for(let state of newAdj8Moves)
-						{
-							//gameStateBfsQ.add(state);
-							actions.push(state);
-						}
-						//collect all jump nodes and add it to bfsq and actions
-						let newJumpMoves: GameState[] = new Array();
-						newJumpMoves = this.performJumps(x, y);
-						for(let state of newJumpMoves)
-						{
-							//gameStateBfsQ.add(state);
-							actions.push(state);
-						}
-					}
-				}
-			}
-				else
-				{
-					for(let p of this.getBlacksList())
-					{
-						this.markAllVisitedFalse(); //mark all i,j as false;visited.
-						let x = p.getX();
-						let y = p.getY();
-						this.getJumpQ().push(new Tile(x,y,"")); // check
-						this.getVisitedArray()[x][y] = true;
-						this.initBehindTopLeftPlacesTrue(x, y);
-						//collect all 8-adj positions in an arraylist, add it to bfsQ and actions
-						let newAdj8Moves: GameState[] = new Array();
-						newAdj8Moves = this.checkAdjEightPlaces(x, y);
-						for(let state of newAdj8Moves)
-						{
-							//gameStateBfsQ.add(state);
-							actions.push(state);
-						}
-						//collect all jump nodes and add it to bfsq and actions
-						let newJumpMoves : GameState[] = new Array();
-						newJumpMoves = this.performJumps(x, y);
-						for(let state of newJumpMoves)
-						{
-							//gameStateBfsQ.add(state);
-							actions.push(state);
-						}
-					}
-				}
-				
-				//----------------------------------------
-				
-			//}	
-		}
-		else
-		{
-			//--------------home camp first part------------
-			if(this.pawnsPresentInWhiteHomeCamp())
-			{
-				let gotMoves = 0;
-				for(let p of this.getWhitesList())
-				{
-					if(p.inWhiteHomeCamp())
-					{
-						this.markAllVisitedFalse(); //mark all i,j as false;visited.
-						let x = p.getX();
-						let y = p.getY();
-						this.getJumpQ().push(new Tile(x,y, "")); // check
-						this.getVisitedArray()[x][y] = true;
-						this.initBehindBottomRightPlacesTrue(x, y);
-						//collect all 8-adj positions in an arraylist, add it to bfsQ and actions
-						let newAdj8Moves: GameState[] = new Array();
-						newAdj8Moves = this.checkAdjEightPlaces(x, y);
-						for(let state of newAdj8Moves)
-						{
-							gotMoves++;
-							//gameStateBfsQ.add(state);
-							actions.push(state);
-						}
-						//collect all jump nodes and add it to bfsq and actions
-						let newJumpMoves: GameState[] = new Array();
-						newJumpMoves = this.performJumps(x, y);
-						for(let state of newJumpMoves)
-						{
-							gotMoves++;
-							//gameStateBfsQ.add(state);
-							actions.push(state);
-						}
-					}
-				}
-				if(gotMoves == 0)
-				{
-					//normal - all pawns checking code.
-					for(let p of this.getWhitesList())
-					{
-						this.markAllVisitedFalse(); //mark all i,j as false;visited.
-						let x = p.getX();
-						let y = p.getY();
-						this.getJumpQ().push(new Tile(x,y, "")); // check
-						this.getVisitedArray()[x][y] = true;
-						this.initBehindBottomRightPlacesTrue(x, y);
-						//collect all 8-adj positions in an arraylist, add it to bfsQ and actions
-						let newAdj8Moves: GameState[] = new Array();
-						newAdj8Moves = this.checkAdjEightPlaces(x, y);
-						for(let state of newAdj8Moves)
-						{
-							//gameStateBfsQ.add(state);
-							actions.push(state);
-						}
-						//collect all jump nodes and add it to bfsq and actions
-						let newJumpMoves: GameState[] = new Array();
-						newJumpMoves = this.performJumps(x, y);
-						for(let state of newJumpMoves)
-						{
-							//gameStateBfsQ.add(state);
-							actions.push(state);
-						}
-					}
-			
-				}
-			}
-			
-				else
-				{
-					for(let p of this.getWhitesList())
-					{
-						this.markAllVisitedFalse(); //mark all i,j as false;visited.
-						let x = p.getX();
-						let y = p.getY();
-						this.getJumpQ().push(new Tile(x,y, "")); // check
-						this.getVisitedArray()[x][y] = true;
-						this.initBehindBottomRightPlacesTrue(x, y);
-						//collect all 8-adj positions in an arraylist, add it to bfsQ and actions
-						let newAdj8Moves: GameState[] = new Array();
-						newAdj8Moves = this.checkAdjEightPlaces(x, y);
-						for(let state of newAdj8Moves)
-						{
-							//gameStateBfsQ.add(state);
-							actions.push(state);
-						}
-						//collect all jump nodes and add it to bfsq and actions
-						let newJumpMoves: GameState[] = new Array();
-						newJumpMoves = this.performJumps(x, y);
-						for(let state of newJumpMoves)
-						{
-							//gameStateBfsQ.add(state);
-							actions.push(state);
-						}
-					}
-				}
-		}
 		return actions;
 	}
 	
@@ -606,46 +448,59 @@ export class GameState {
 		return this.jumpQueue;
 	}
 	
-	public initAllBottomRightPlacesFalse()
-	{
-		for(let i = 14; i < 16 ; i++)
-			for(let j = 11; j < 16 ; j++)
-						this.visited[i][j] = false;
-		
-		for(let j=12; j<16;j++)
-				this.visited[13][j] = false;
-		
-		for(let j=13; j<16;j++)
-			this.visited[12][j] = false;
-		
-		for(let j=14; j<16;j++)
-				this.visited[11][j] = false;
-	}
-	
-	public initBehindBottomRightPlacesTrue(x: number, y: number)
-	{
-		for(let i = 14; i < 16 ; i++)
-		{
-			for(let j = 11; j < 16 ; j++)
-			{
+
+	/**
+	 * Initializes the top left part / bottom right part of visited array to true. (depending on the top flag.)
+	 * if top = true, initializes all top left of x, y to true.
+	 * if top = false, initialzes all bottom right of x, y to true. 
+	 */
+	public visitBehindPlaces(x: number, y: number, top: boolean) {
+		if(top == true) {
+			// initialize all top left visited[i][j] of x,y to true.
+			for(let i = 0; i < 2 ; i++)
+				for(let j = 0; j < 5 ; j++)
+					if(i+j <= x+y)
+						this.visited[i][j] = true;
+			
+			for( let j=0; j<4;j++)
+				if(2+j <= x+y)
+					this.visited[2][j] = true;
+			
+			for( let j=0; j<3;j++)
+				if(3+j <= x+y)
+					this.visited[3][j] = true;
+			
+			for( let j=0; j<2;j++)
+				if(4+j <= x+y)
+					this.visited[4][j] = true;
+			
+		}
+		else {
+			
+			// initialize all bottom right visited[i][j] of x,y to true.
+			for(let i = 14; i < 16 ; i++)
+				for(let j = 11; j < 16 ; j++)
 					if(x+y <= i+j)
 						this.visited[i][j] = true;
-			}
+
+			for(let j=12; j<16;j++)
+				if(x+y <= 13+j)
+					this.visited[13][j] = true;
+			
+			for(let j=13; j<16;j++)
+				if(x+y <= 12+j)
+					this.visited[12][j] = true;
+			
+			for(let j=14; j<16;j++)
+				if(x+y <= 11+j)
+					this.visited[11][j] = true;
+
 		}
-		for(let j=12; j<16;j++)
-			if(x+y <= 13+j)
-				this.visited[13][j] = true;
-		
-		for(let j=13; j<16;j++)
-			if(x+y <= 12+j)
-				this.visited[12][j] = true;
-		
-		for(let j=14; j<16;j++)
-			if(x+y <= 11+j)
-				this.visited[11][j] = true;
-		
 	}
-	
+
+	/**
+	 * Sets visited[i][j] = false for all tiles in top left home camp. 
+	 */
 	public initAllTopLeftPlacesFalse()
 	{
 		for(let i = 0; i < 2 ; i++)
@@ -661,42 +516,38 @@ export class GameState {
 		for( let j=0; j<2;j++)
 				this.visited[4][j] = false;
 	}
-	
-	public initBehindTopLeftPlacesTrue(x: number, y: number)
+
+	/**
+	 * Sets visited[i][j] = false for all tiles in bottom right home camp. 
+	 */
+	public initAllBottomRightPlacesFalse()
 	{
-		  
-		for(let i = 0; i < 2 ; i++)
-		{
-			for(let j = 0; j < 5 ; j++)
-			{
-					if(i+j <= x+y)
-						this.visited[i][j] = true;
-			}
-		}
-		for( let j=0; j<4;j++)
-			if(2+j <= x+y)
-				this.visited[2][j] = true;
+		for(let i = 14; i < 16 ; i++)
+			for(let j = 11; j < 16 ; j++)
+						this.visited[i][j] = false;
 		
-		for( let j=0; j<3;j++)
-			if(3+j <= x+y)
-				this.visited[3][j] = true;
+		for(let j=12; j<16;j++)
+				this.visited[13][j] = false;
 		
-		for( let j=0; j<2;j++)
-			if(4+j <= x+y)
-				this.visited[4][j] = true;
+		for(let j=13; j<16;j++)
+			this.visited[12][j] = false;
+		
+		for(let j=14; j<16;j++)
+				this.visited[11][j] = false;
 	}
 
-	public printBoard()
-	{
-		for(let i=0;i<16;i++)
-		{
-			for(let j=0;j<16;j++)
-			{
-				//process.stdout.write(this.board[i][j] + ",  ");
-			}
-			//process.stdout.write("\n");
-		}
-	}
+
+	// public printBoard()
+	// {
+	// 	for(let i=0;i<16;i++)
+	// 	{
+	// 		for(let j=0;j<16;j++)
+	// 		{
+	// 			//process.stdout.write(this.board[i][j] + ",  ");
+	// 		}
+	// 		//process.stdout.write("\n");
+	// 	}
+	// }
 
 	public markAllVisitedFalse()
 	{
@@ -707,9 +558,11 @@ export class GameState {
 
 	public isValidPosition(x: number, y: number): boolean
 	{
-		if(x<0 || y<0 || x>15 || y>15) return false;
-		if(this.board[x][y] != ".") return false;
-		return true;
+		if(x<0 || y<0 || x>15 || y>15 || this.board[x][y] != ".")
+			return false;
+		else {
+			return true;
+		}
 	}
 	
 	public containsPawn(x: number, y: number): boolean
@@ -769,154 +622,37 @@ export class GameState {
 	public checkAdjEightPlaces(i, j): GameState[]
 	{
 		let newAdj8Moves: GameState[] = new Array();
-		if(this.player == "BLACK")
-		{
-			if(this.inCampWhite(i,j))
-			{
-				if(this.isValidPosition(i-1,j-1) && this.containsPawn(i-1,j-1) == false && !this.visited[i-1][j-1] && this.inCampWhite(i-1,j-1))
-				{
-					newAdj8Moves.push(this.addLegalMove(i,j,i-1,j-1,"E " + i + "," + j + " " + (i-1) + "," + (j-1) + "\n"));
-				}
-				if(this.isValidPosition(i-1,j) && this.containsPawn(i-1,j) == false && !this.visited[i-1][j] && this.inCampWhite(i-1,j))
-				{
-					newAdj8Moves.push(this.addLegalMove(i,j,i-1,j,"E " + i + "," + j + " " + (i-1) + "," + (j) + "\n"));
-				}
-				if(this.isValidPosition(i-1,j+1) && this.containsPawn(i-1,j+1) == false && !this.visited[i-1][j+1] && this.inCampWhite(i-1,j+1))
-				{
-					newAdj8Moves.push(this.addLegalMove(i,j,i-1,j+1,"E " + i + "," + j + " " + (i-1) + "," + (j+1) + "\n"));
-				}
-				if(this.isValidPosition(i,j+1) && this.containsPawn(i,j+1) == false && !this.visited[i][j+1] && this.inCampWhite(i,j+1))
-				{
-					newAdj8Moves.push(this.addLegalMove(i,j,i,j+1,"E " + i + "," + j + " " + (i) + "," + (j+1) + "\n"));
-				}
-				if(this.isValidPosition(i+1,j+1) && this.containsPawn(i+1,j+1) == false && !this.visited[i+1][j+1] && this.inCampWhite(i+1,j+1))
-				{
-					newAdj8Moves.push(this.addLegalMove(i,j,i+1,j+1,"E " + i + "," + j + " " + (i+1) + "," + (j+1) + "\n"));
-				}
-				if(this.isValidPosition(i+1,j) && this.containsPawn(i+1,j) == false && !this.visited[i+1][j] && this.inCampWhite(i+1,j))
-				{
-					newAdj8Moves.push(this.addLegalMove(i,j,i+1,j,"E " + i + "," + j + " " + (i+1) + "," + (j) + "\n"));
-				}
-				if(this.isValidPosition(i+1,j-1) && this.containsPawn(i+1,j-1) == false && !this.visited[i+1][j-1] && this.inCampWhite(i+1,j-1))
-				{
-					newAdj8Moves.push(this.addLegalMove(i,j,i+1,j-1,"E " + i + "," + j + " " + (i+1) + "," + (j-1) + "\n"));
-				}
-				if(this.isValidPosition(i,j-1) && this.containsPawn(i,j-1) == false && !this.visited[i][j-1] && this.inCampWhite(i,j-1))
-				{
-					newAdj8Moves.push(this.addLegalMove(i,j,i,j-1,"E " + i + "," + j + " " + (i) + "," + (j-1) + "\n"));
-				}
-			
-			}
-			else
-			{
-				if(this.isValidPosition(i-1,j-1) && this.containsPawn(i-1,j-1) == false && !this.visited[i-1][j-1])
-				{
-					newAdj8Moves.push(this.addLegalMove(i,j,i-1,j-1,"E " + i + "," + j + " " + (i-1) + "," + (j-1) + "\n"));
-				}
-				if(this.isValidPosition(i-1,j) && this.containsPawn(i-1,j) == false && !this.visited[i-1][j])
-				{
-					newAdj8Moves.push(this.addLegalMove(i,j,i-1,j,"E " + i + "," + j + " " + (i-1) + "," + (j) + "\n"));
-				}
-				if(this.isValidPosition(i-1,j+1) && this.containsPawn(i-1,j+1) == false && !this.visited[i-1][j+1])
-				{
-					newAdj8Moves.push(this.addLegalMove(i,j,i-1,j+1,"E " + i + "," + j + " " + (i-1) + "," + (j+1) + "\n"));
-				}
-				if(this.isValidPosition(i,j+1) && this.containsPawn(i,j+1) == false && !this.visited[i][j+1])
-				{
-					newAdj8Moves.push(this.addLegalMove(i,j,i,j+1,"E " + i + "," + j + " " + (i) + "," + (j+1) + "\n"));
-				}
-				if(this.isValidPosition(i+1,j+1) && this.containsPawn(i+1,j+1) == false && !this.visited[i+1][j+1])
-				{
-					newAdj8Moves.push(this.addLegalMove(i,j,i+1,j+1,"E " + i + "," + j + " " + (i+1) + "," + (j+1) + "\n"));
-				}
-				if(this.isValidPosition(i+1,j) && this.containsPawn(i+1,j) == false && !this.visited[i+1][j])
-				{
-					newAdj8Moves.push(this.addLegalMove(i,j,i+1,j,"E " + i + "," + j + " " + (i+1) + "," + (j) + "\n"));
-				}
-				if(this.isValidPosition(i+1,j-1) && this.containsPawn(i+1,j-1) == false && !this.visited[i+1][j-1])
-				{
-					newAdj8Moves.push(this.addLegalMove(i,j,i+1,j-1,"E " + i + "," + j + " " + (i+1) + "," + (j-1) + "\n"));
-				}
-				if(this.isValidPosition(i,j-1) && this.containsPawn(i,j-1) == false && !this.visited[i][j-1])
-				{
-					newAdj8Moves.push(this.addLegalMove(i,j,i,j-1,"E " + i + "," + j + " " + (i) + "," + (j-1) + "\n"));
+		
+			for(let di = -1; di <= 1; di++ ) {
+				for(let dj = -1; dj <= 1; dj++ ) {
+					let nextI = i + di;
+					let nextJ = j + dj;
+
+					// continue when di and dj = 0 because we dont need that position.
+					if(nextI == i && nextJ == j) {
+						continue;
+					}
+
+					if(this.isValidPosition(nextI, nextJ) && !this.containsPawn(nextI, nextJ) && !this.visited[nextI][nextJ]) {
+						
+						if(this.player == "BLACK") {
+							// add only if it is not in opponent home camp, OR if it is, and the next position is also in oppnt home camp.
+							if(!this.inCampWhite(i, j) || (this.inCampWhite(i, j) && this.inCampWhite(nextI, nextJ))) {
+								let previousMoves = "E" + i + "," + j + " " + nextI + "," + nextJ + "\n";
+								newAdj8Moves.push(this.addLegalMove(i, j, nextI, nextJ, previousMoves))
+							}
+						}
+						else {
+							// add only if it is not in opponent home camp, OR if it is, and the next position is also in oppnt home camp.
+							if(!this.inCampBlack(i, j) || (this.inCampBlack(i, j) && this.inCampBlack(nextI, nextJ))) {
+								let previousMoves = "E" + i + "," + j + " " + nextI + "," + nextJ + "\n";
+								newAdj8Moves.push(this.addLegalMove(i, j, nextI, nextJ, previousMoves))
+							}
+						}
+						
+					}
 				}
 			}
-		}
-		else
-		{
-			if(this.inCampBlack(i,j))
-			{
-				if(this.isValidPosition(i-1,j-1) && this.containsPawn(i-1,j-1) == false && !this.visited[i-1][j-1] && this.inCampBlack(i-1,j-1))
-				{
-					newAdj8Moves.push(this.addLegalMove(i,j,i-1,j-1,"E " + i + "," + j + " " + (i-1) + "," + (j-1) + "\n"));
-				}
-				if(this.isValidPosition(i-1,j) && this.containsPawn(i-1,j) == false && !this.visited[i-1][j] && this.inCampBlack(i-1,j))
-				{
-					newAdj8Moves.push(this.addLegalMove(i,j,i-1,j,"E " + i + "," + j + " " + (i-1) + "," + (j) + "\n"));
-				}
-				if(this.isValidPosition(i-1,j+1) && this.containsPawn(i-1,j+1) == false && !this.visited[i-1][j+1] && this.inCampBlack(i-1,j+1))
-				{
-					newAdj8Moves.push(this.addLegalMove(i,j,i-1,j+1,"E " + i + "," + j + " " + (i-1) + "," + (j+1) + "\n"));
-				}
-				if(this.isValidPosition(i,j+1) && this.containsPawn(i,j+1) == false && !this.visited[i][j+1] && this.inCampBlack(i,j+1))
-				{
-					newAdj8Moves.push(this.addLegalMove(i,j,i,j+1,"E " + i + "," + j + " " + (i) + "," + (j+1) + "\n"));
-				}
-				if(this.isValidPosition(i+1,j+1) && this.containsPawn(i+1,j+1) == false && !this.visited[i+1][j+1] && this.inCampBlack(i+1,j+1))
-				{
-					newAdj8Moves.push(this.addLegalMove(i,j,i+1,j+1,"E " + i + "," + j + " " + (i+1) + "," + (j-1) + "\n"));
-				}
-				if(this.isValidPosition(i+1,j) && this.containsPawn(i+1,j) == false && !this.visited[i+1][j] && this.inCampBlack(i+1,j))
-				{
-					newAdj8Moves.push(this.addLegalMove(i,j,i+1,j,"E " + i + "," + j + " " + (i+1) + "," + (j) + "\n"));
-				}
-				if(this.isValidPosition(i+1,j-1) && this.containsPawn(i+1,j-1) == false && !this.visited[i+1][j-1] && this.inCampBlack(i+1,j-1))
-				{
-					newAdj8Moves.push(this.addLegalMove(i,j,i+1,j-1,"E " + i + "," + j + " " + (i+1) + "," + (j-1) + "\n"));
-				}
-				if(this.isValidPosition(i,j-1) && this.containsPawn(i,j-1) == false && !this.visited[i][j-1] && this.inCampBlack(i,j-1))
-				{
-					newAdj8Moves.push(this.addLegalMove(i,j,i,j-1,"E " + i + "," + j + " " + (i) + "," + (j-1) + "\n"));
-				}
-			
-			}
-			else
-			{
-				if(this.isValidPosition(i-1,j-1) && this.containsPawn(i-1,j-1) == false && !this.visited[i-1][j-1])
-				{
-					newAdj8Moves.push(this.addLegalMove(i,j,i-1,j-1,"E " + i + "," + j + " " + (i-1) + "," + (j-1) + "\n"));
-				}
-				if(this.isValidPosition(i-1,j) && this.containsPawn(i-1,j) == false && !this.visited[i-1][j])
-				{
-					newAdj8Moves.push(this.addLegalMove(i,j,i-1,j,"E " + i + "," + j + " " + (i-1) + "," + (j) + "\n"));
-				}
-				if(this.isValidPosition(i-1,j+1) && this.containsPawn(i-1,j+1) == false && !this.visited[i-1][j+1])
-				{
-					newAdj8Moves.push(this.addLegalMove(i,j,i-1,j+1,"E " + i + "," + j + " " + (i-1) + "," + (j+1) + "\n"));
-				}
-				if(this.isValidPosition(i,j+1) && this.containsPawn(i,j+1) == false && !this.visited[i][j+1])
-				{
-					newAdj8Moves.push(this.addLegalMove(i,j,i,j+1,"E " + i + "," + j + " " + (i) + "," + (j+1) + "\n"));
-				}
-				if(this.isValidPosition(i+1,j+1) && this.containsPawn(i+1,j+1) == false && !this.visited[i+1][j+1])
-				{
-					newAdj8Moves.push(this.addLegalMove(i,j,i+1,j+1,"E " + i + "," + j + " " + (i+1) + "," + (j+1) + "\n"));
-				}
-				if(this.isValidPosition(i+1,j) && this.containsPawn(i+1,j) == false && !this.visited[i+1][j])
-				{
-					newAdj8Moves.push(this.addLegalMove(i,j,i+1,j,"E " + i + "," + j + " " + (i+1) + "," + (j) + "\n"));
-				}
-				if(this.isValidPosition(i+1,j-1) && this.containsPawn(i+1,j-1) == false && !this.visited[i+1][j-1])
-				{
-					newAdj8Moves.push(this.addLegalMove(i,j,i+1,j-1,"E " + i + "," + j + " " + (i+1) + "," + (j-1) + "\n"));
-				}
-				if(this.isValidPosition(i,j-1) && this.containsPawn(i,j-1) == false && !this.visited[i][j-1])
-				{
-					newAdj8Moves.push(this.addLegalMove(i,j,i,j-1,"E " + i + "," + j + " " + (i) + "," + (j-1) + "\n"));
-				}
-			}
-		}
 		return newAdj8Moves;
 	}
 	
@@ -990,7 +726,61 @@ export class GameState {
 	public performJumps(x, y): GameState[]
 	{
 		let newJumpMoves: GameState[] = new Array();
+		//--------------------------------------
 		
+		while(this.jumpQueue.length != 0) {
+			let t = this.jumpQueue.shift();
+			let i = t.getX(), j = t.getY();
+
+			for(let di= -2 ; di <= 2; di+2) {
+				for(let dj= -2; dj <=2; dj+2) {
+					let nextI = x + di;
+					let nextJ = y + dj;
+
+					if(nextI == x && nextJ == y) {
+						continue;
+					}
+
+					let obstaclei = 0, obstaclej = 0;
+					if(di > 0) {
+						obstaclei = x + 1;
+					}
+					else if(di < 0) {
+						obstaclei = x - 1;
+					}
+					if(dj > 0) {
+						obstaclej = y + 1;
+					}
+					else if(dj < 0) {
+						obstaclej = y - 1;
+					}
+
+					if(this.isValidPosition(nextI, nextJ) && this.containsPawn(obstaclei, obstaclej) && !this.visited[nextI][nextJ]) {
+						if(this.player == "BLACK") {
+							let previousMoves = t.getPreviousMoves() + "J " + i + "," + j + " " + nextI + "," + nextJ + "\n";
+							if(!this.inCampWhite(x, y) || (this.inCampWhite(x, y) && this.inCampWhite(nextI, nextJ))) {
+								newJumpMoves.push(this.addLegalMove(x, y, nextI, nextJ, previousMoves))
+							}
+							this.jumpQueue.push(new Tile(nextI, nextJ, previousMoves))
+							this.visited[nextI][nextJ] = true;
+						}
+						else {
+							let previousMoves = t.getPreviousMoves() + "J " + i + "," + j + " " + nextI + "," + nextJ + "\n";
+							if(!this.inCampBlack(x, y) || (this.inCampBlack(x, y) && this.inCampBlack(nextI, nextJ))) {
+								newJumpMoves.push(this.addLegalMove(x, y, nextI, nextJ, previousMoves))
+							}
+							this.jumpQueue.push(new Tile(nextI, nextJ, previousMoves))
+							this.visited[nextI][nextJ] = true;
+						}
+					}
+
+				}
+			}
+		}
+
+		return newJumpMoves;
+
+		//----------------------------------------
 		while(this.jumpQueue.length != 0)
 		{
 			let t = this.jumpQueue.shift();
