@@ -416,7 +416,7 @@ export class GameState {
 			actions = actions.concat(newJumpMoves);
 
 		}
-		
+		console.log("Returning actions")
 		return actions;
 	}
 	
@@ -729,11 +729,14 @@ export class GameState {
 		//--------------------------------------
 		
 		while(this.jumpQueue.length != 0) {
+			//console.log("il")
 			let t = this.jumpQueue.shift();
 			let i = t.getX(), j = t.getY();
 
-			for(let di= -2 ; di <= 2; di+2) {
-				for(let dj= -2; dj <=2; dj+2) {
+			for(let di= -2 ; di <= 2; di = di+2) {
+				for(let dj= -2; dj <=2; dj = dj+2) {
+
+					//console.log(di, dj)
 					let nextI = x + di;
 					let nextJ = y + dj;
 
@@ -741,7 +744,7 @@ export class GameState {
 						continue;
 					}
 
-					let obstaclei = 0, obstaclej = 0;
+					let obstaclei = x, obstaclej = y;
 					if(di > 0) {
 						obstaclei = x + 1;
 					}
@@ -777,229 +780,9 @@ export class GameState {
 				}
 			}
 		}
-
+		//console.log("returning jump moves")
 		return newJumpMoves;
 
-		//----------------------------------------
-		while(this.jumpQueue.length != 0)
-		{
-			let t = this.jumpQueue.shift();
-			let i = t.getX(), j = t.getY();
-			//----------------------trying camp oppnt----
-			if(this.player == "BLACK")
-			{
-				if(this.inCampWhite(x,y))
-				{
-					if(this.isValidPosition(i-2,j-2) && this.containsPawn(i-1,j-1) && !this.visited[i-2][j-2])
-					{
-						if(this.inCampWhite(i-2,j-2))
-							newJumpMoves.push(this.addLegalMove(x,y,i-2,j-2,t.getPreviousMoves() + "J " + i + "," + j + " " + (i-2) + "," + (j-2) + "\n")); 
-						this.jumpQueue.push(new Tile(i-2,j-2,t.getPreviousMoves()+ "J " + i + "," + j + " " + (i-2) + "," + (j-2) + "\n"));
-						this.visited[i-2][j-2] = true;
-					}
-					if(this.isValidPosition(i-2,j) && this.containsPawn(i-1,j) && !this.visited[i-2][j])
-					{
-						if(this.inCampWhite(i-2,j))
-							newJumpMoves.push(this.addLegalMove(x,y,i-2,j,t.getPreviousMoves()+"J " + i + "," + j + " " + (i-2) + "," + (j) + "\n"));
-						this.jumpQueue.push(new Tile(i-2,j,t.getPreviousMoves()+"J " + i + "," + j + " " + (i-2) + "," + (j) + "\n"));
-						this.visited[i-2][j] = true;
-					}
-					if(this.isValidPosition(i-2,j+2) && this.containsPawn(i-1,j+1) && !this.visited[i-2][j+2])
-					{
-						if(this.inCampWhite(i-2,j+2))
-							newJumpMoves.push(this.addLegalMove(x,y,i-2,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i-2) + "," + (j+2) + "\n"));
-						this.jumpQueue.push(new Tile(i-2,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i-2) + "," + (j+2) + "\n"));
-						this.visited[i-2][j+2] = true;
-					}
-					if(this.isValidPosition(i,j+2) && this.containsPawn(i,j+1) && !this.visited[i][j+2])
-					{
-						if(this.inCampWhite(i,j+2))
-							newJumpMoves.push(this.addLegalMove(x,y,i,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i) + "," + (j+2) + "\n"));
-						this.jumpQueue.push(new Tile(i,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i) + "," + (j+2) + "\n"));
-						this.visited[i][j+2] = true;
-					}
-					if(this.isValidPosition(i+2,j+2) && this.containsPawn(i+1,j+1) && !this.visited[i+2][j+2])
-					{
-						if(this.inCampWhite(i+2,j+2))
-							newJumpMoves.push(this.addLegalMove(x,y,i+2,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j+2) + "\n"));
-						this.jumpQueue.push(new Tile(i+2,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j+2) + "\n"));
-						this.visited[i+2][j+2] = true;
-					}
-					if(this.isValidPosition(i+2,j) && this.containsPawn(i+1,j) && !this.visited[i+2][j])
-					{
-						if(this.inCampWhite(i+2,j))
-							newJumpMoves.push(this.addLegalMove(x,y,i+2,j,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j) + "\n"));
-						this.jumpQueue.push(new Tile(i+2,j,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j) + "\n"));
-						this.visited[i+2][j] = true;
-					}
-					if(this.isValidPosition(i+2,j-2) && this.containsPawn(i+1,j-1) && !this.visited[i+2][j-2])
-					{
-						if(this.inCampWhite(i+2,j-2))
-							newJumpMoves.push(this.addLegalMove(x,y,i+2,j-2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j-2) + "\n"));
-						this.jumpQueue.push(new Tile(i+2,j-2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j-2) + "\n"));
-						this.visited[i+2][j-2] = true;
-					}
-					if(this.isValidPosition(i,j-2) && this.containsPawn(i, j-1) && !this.visited[i][j-2])
-					{
-						if(this.inCampWhite(i,j-2))
-							newJumpMoves.push(this.addLegalMove(x,y,i,j-2,t.getPreviousMoves()+"J " + i + "," + j + " " + i + "," + (j-2) + "\n"));
-						this.jumpQueue.push(new Tile(i,j-2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i) + "," + (j-2) + "\n"));
-						this.visited[i][j-2] = true;
-					}
-				}
-				else
-				{
-					if(this.isValidPosition(i-2,j-2) && this.containsPawn(i-1,j-1) && !this.visited[i-2][j-2])
-					{
-						newJumpMoves.push(this.addLegalMove(x,y,i-2,j-2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i-2) + "," + (j-2) + "\n")); 
-						this.jumpQueue.push(new Tile(i-2,j-2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i-2) + "," + (j-2) + "\n"));
-					}
-					if(this.isValidPosition(i-2,j) && this.containsPawn(i-1,j) && !this.visited[i-2][j])
-					{
-						newJumpMoves.push(this.addLegalMove(x,y,i-2,j,t.getPreviousMoves()+"J " + i + "," + j + " " + (i-2) + "," + (j) + "\n"));
-						this.jumpQueue.push(new Tile(i-2,j,t.getPreviousMoves()+"J " + i + "," + j + " " + (i-2) + "," + (j) + "\n"));
-					}
-					if(this.isValidPosition(i-2,j+2) && this.containsPawn(i-1,j+1) && !this.visited[i-2][j+2])
-					{
-						newJumpMoves.push(this.addLegalMove(x,y,i-2,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i-2) + "," + (j+2) + "\n"));
-						this.jumpQueue.push(new Tile(i-2,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i-2) + "," + (j+2) + "\n"));
-					}
-					if(this.isValidPosition(i,j+2) && this.containsPawn(i,j+1) && !this.visited[i][j+2])
-					{
-						newJumpMoves.push(this.addLegalMove(x,y,i,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i) + "," + (j+2) + "\n"));
-						this.jumpQueue.push(new Tile(i,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i) + "," + (j+2) + "\n"));
-					}
-					if(this.isValidPosition(i+2,j+2) && this.containsPawn(i+1,j+1) && !this.visited[i+2][j+2])
-					{
-						newJumpMoves.push(this.addLegalMove(x,y,i+2,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j+2) + "\n"));
-						this.jumpQueue.push(new Tile(i+2,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j+2) + "\n"));
-					}
-					if(this.isValidPosition(i+2,j) && this.containsPawn(i+1,j) && !this.visited[i+2][j])
-					{
-						newJumpMoves.push(this.addLegalMove(x,y,i+2,j,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j) + "\n"));
-						this.jumpQueue.push(new Tile(i+2,j,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j) + "\n"));
-					}
-					if(this.isValidPosition(i+2,j-2) && this.containsPawn(i+1,j-1) && !this.visited[i+2][j-2])
-					{
-						newJumpMoves.push(this.addLegalMove(x,y,i+2,j-2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j-2) + "\n"));
-						this.jumpQueue.push(new Tile(i+2,j-2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j-2) + "\n"));
-					}
-					if(this.isValidPosition(i,j-2) && this.containsPawn(i, j-1) && !this.visited[i][j-2])
-					{
-						newJumpMoves.push(this.addLegalMove(x,y,i,j-2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i) + "," + (j-2) + "\n"));
-						this.jumpQueue.push(new Tile(i,j-2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i) + "," + (j-2) + "\n"));
-					}
-				} 
-			}
-			else
-			{
-				if(this.inCampBlack(x,y))
-				{
-					if(this.isValidPosition(i-2,j-2) && this.containsPawn(i-1,j-1) && !this.visited[i-2][j-2])
-					{
-						if(this.inCampBlack(i-2,j-2))
-							newJumpMoves.push(this.addLegalMove(x,y,i-2,j-2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i-2) + "," + (j-2) + "\n")); 
-						this.jumpQueue.push(new Tile(i-2,j-2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i-2) + "," + (j-2) + "\n"));
-						this.visited[i-2][j-2] = true;
-						
-					}
-					if(this.isValidPosition(i-2,j) && this.containsPawn(i-1,j) && !this.visited[i-2][j])
-					{
-						if(this.inCampBlack(i-2,j))
-							newJumpMoves.push(this.addLegalMove(x,y,i-2,j,t.getPreviousMoves()+"J " + i + "," + j + " " + (i-2) + "," + (j) + "\n"));
-						this.jumpQueue.push(new Tile(i-2,j,t.getPreviousMoves()+"J " + i + "," + j + " " + (i-2) + "," + (j) + "\n"));
-						this.visited[i-2][j] = true;
-					}
-					if(this.isValidPosition(i-2,j+2) && this.containsPawn(i-1,j+1) && !this.visited[i-2][j+2])
-					{
-						if(this.inCampBlack(i-2,j+2))
-							newJumpMoves.push(this.addLegalMove(x,y,i-2,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i-2) + "," + (j+2) + "\n"));
-						this.jumpQueue.push(new Tile(i-2,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i-2) + "," + (j+2) + "\n"));
-						this.visited[i-2][j+2] = true;
-					}
-					if(this.isValidPosition(i,j+2) && this.containsPawn(i,j+1) && !this.visited[i][j+2])
-					{
-						if(this.inCampBlack(i,j+2))
-							newJumpMoves.push(this.addLegalMove(x,y,i,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i) + "," + (j+2) + "\n"));
-						this.jumpQueue.push(new Tile(i,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i) + "," + (j+2) + "\n"));
-						this.visited[i][j+2] = true;
-					}
-					if(this.isValidPosition(i+2,j+2) && this.containsPawn(i+1,j+1) && !this.visited[i+2][j+2])
-					{
-						if(this.inCampBlack(i+2,j+2))
-							newJumpMoves.push(this.addLegalMove(x,y,i+2,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j+2) + "\n"));
-						this.jumpQueue.push(new Tile(i+2,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j+2) + "\n"));
-						this.visited[i+2][j+2] = true;
-					}
-					if(this.isValidPosition(i+2,j) && this.containsPawn(i+1,j) && !this.visited[i+2][j])
-					{
-						if(this.inCampBlack(i+2,j))
-							newJumpMoves.push(this.addLegalMove(x,y,i+2,j,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j) + "\n"));
-						this.jumpQueue.push(new Tile(i+2,j,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j) + "\n"));
-						this.visited[i+2][j] = true;
-					}
-					if(this.isValidPosition(i+2,j-2) && this.containsPawn(i+1,j-1) && !this.visited[i+2][j-2])
-					{
-						if(this.inCampBlack(i+2,j-2))
-							newJumpMoves.push(this.addLegalMove(x,y,i+2,j-2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j-2) + "\n"));
-						this.jumpQueue.push(new Tile(i+2,j-2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j-2) + "\n"));
-						this.visited[i+2][j-2] = true;
-					}
-					if(this.isValidPosition(i,j-2) && this.containsPawn(i, j-1) && !this.visited[i][j-2])
-					{
-						if(this.inCampBlack(i,j-2))
-							newJumpMoves.push(this.addLegalMove(x,y,i,j-2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i) + "," + (j-2) + "\n"));
-						this.jumpQueue.push(new Tile(i,j-2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i) + "," + (j-2) + "\n"));
-						this.visited[i][j-2] = true;
-					}
-				}
-				else
-				{
-					if(this.isValidPosition(i-2,j-2) && this.containsPawn(i-1,j-1) && !this.visited[i-2][j-2])
-					{
-						newJumpMoves.push(this.addLegalMove(x,y,i-2,j-2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i-2) + "," + (j-2) + "\n")); 
-						this.jumpQueue.push(new Tile(i-2,j-2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i-2) + "," + (j-2) + "\n"));
-					}
-					if(this.isValidPosition(i-2,j) && this.containsPawn(i-1,j) && !this.visited[i-2][j])
-					{
-						newJumpMoves.push(this.addLegalMove(x,y,i-2,j,t.getPreviousMoves() + "J " + i + "," + j + " " + (i-2) + "," + (j) + "\n"));
-						this.jumpQueue.push(new Tile(i-2,j,t.getPreviousMoves()+"J " + i + "," + j + " " + (i-2) + "," + (j) + "\n"));
-					}
-					if(this.isValidPosition(i-2,j+2) && this.containsPawn(i-1,j+1) && !this.visited[i-2][j+2])
-					{
-						newJumpMoves.push(this.addLegalMove(x,y,i-2,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i-2) + "," + (j+2) + "\n"));
-						this.jumpQueue.push(new Tile(i-2,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i-2) + "," + (j+2) + "\n"));
-					}
-					if(this.isValidPosition(i,j+2) && this.containsPawn(i,j+1) && !this.visited[i][j+2])
-					{
-						newJumpMoves.push(this.addLegalMove(x,y,i,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i) + "," + (j+2) + "\n"));
-						this.jumpQueue.push(new Tile(i,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i) + "," + (j+2) + "\n"));
-					}
-					if(this.isValidPosition(i+2,j+2) && this.containsPawn(i+1,j+1) && !this.visited[i+2][j+2])
-					{
-						newJumpMoves.push(this.addLegalMove(x,y,i+2,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j+2) + "\n"));
-						this.jumpQueue.push(new Tile(i+2,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j+2) + "\n"));
-					}
-					if(this.isValidPosition(i+2,j) && this.containsPawn(i+1,j) && !this.visited[i+2][j])
-					{
-						newJumpMoves.push(this.addLegalMove(x,y,i+2,j,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j) + "\n"));
-						this.jumpQueue.push(new Tile(i+2,j,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j) + "\n"));
-					}
-					if(this.isValidPosition(i+2,j-2) && this.containsPawn(i+1,j-1) && !this.visited[i+2][j-2])
-					{
-						newJumpMoves.push(this.addLegalMove(x,y,i+2,j-2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j-2) + "\n"));
-						this.jumpQueue.push(new Tile(i+2,j-2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j-2) + "\n"));
-					}
-					if(this.isValidPosition(i,j-2) && this.containsPawn(i, j-1) && !this.visited[i][j-2])
-					{
-						newJumpMoves.push(this.addLegalMove(x,y,i,j-2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i) + "," + (j-2) + "\n"));
-						this.jumpQueue.push(new Tile(i,j-2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i) + "," + (j-2) + "\n"));
-					}
-				}
-			}
-			//----------------------
-		}
-		return newJumpMoves;
 	}
 	
 	public getEuclideanDistance(startX, startY, endX, endY): number
@@ -1095,406 +878,505 @@ export class GameState {
 		}
 	}
 
-	public get8AdjMoveIndices(i: number, j: number) {
+	// public get8AdjMoveIndices(i: number, j: number) {
 
 		
+	// 	let newAdj8Moves = new Array();
+	// 	if(this.player == "BLACK")
+	// 	{
+	// 		if(this.inCampWhite(i,j))
+	// 		{
+	// 			if(this.isValidPosition(i-1,j-1) && this.containsPawn(i-1,j-1) == false && !this.visited[i-1][j-1] && this.inCampWhite(i-1,j-1))
+	// 			{
+	// 				newAdj8Moves.push([i-1, j-1]);
+	// 			}
+	// 			if(this.isValidPosition(i-1,j) && this.containsPawn(i-1,j) == false && !this.visited[i-1][j] && this.inCampWhite(i-1,j))
+	// 			{
+	// 				newAdj8Moves.push([i-1,j]);
+	// 			}
+	// 			if(this.isValidPosition(i-1,j+1) && this.containsPawn(i-1,j+1) == false && !this.visited[i-1][j+1] && this.inCampWhite(i-1,j+1))
+	// 			{
+	// 				newAdj8Moves.push([i-1,j+1]);
+	// 			}
+	// 			if(this.isValidPosition(i,j+1) && this.containsPawn(i,j+1) == false && !this.visited[i][j+1] && this.inCampWhite(i,j+1))
+	// 			{
+	// 				newAdj8Moves.push([i, j+1]);
+	// 			}
+	// 			if(this.isValidPosition(i+1,j+1) && this.containsPawn(i+1,j+1) == false && !this.visited[i+1][j+1] && this.inCampWhite(i+1,j+1))
+	// 			{
+	// 				newAdj8Moves.push([i+1, j+1]);
+	// 			}
+	// 			if(this.isValidPosition(i+1,j) && this.containsPawn(i+1,j) == false && !this.visited[i+1][j] && this.inCampWhite(i+1,j))
+	// 			{
+	// 				newAdj8Moves.push([i+1, j]);
+	// 			}
+	// 			if(this.isValidPosition(i+1,j-1) && this.containsPawn(i+1,j-1) == false && !this.visited[i+1][j-1] && this.inCampWhite(i+1,j-1))
+	// 			{
+	// 				newAdj8Moves.push([i+1, j-1]);
+	// 			}
+	// 			if(this.isValidPosition(i,j-1) && this.containsPawn(i,j-1) == false && !this.visited[i][j-1] && this.inCampWhite(i,j-1))
+	// 			{
+	// 				newAdj8Moves.push([i, j-1]);
+	// 			}
+			
+	// 		}
+	// 		else
+	// 		{
+	// 			if(this.isValidPosition(i-1,j-1) && this.containsPawn(i-1,j-1) == false && !this.visited[i-1][j-1])
+	// 			{
+	// 				newAdj8Moves.push([i-1,j-1]);
+	// 			}
+	// 			if(this.isValidPosition(i-1,j) && this.containsPawn(i-1,j) == false && !this.visited[i-1][j])
+	// 			{
+	// 				newAdj8Moves.push([i-1, j]);
+	// 			}
+	// 			if(this.isValidPosition(i-1,j+1) && this.containsPawn(i-1,j+1) == false && !this.visited[i-1][j+1])
+	// 			{
+	// 				newAdj8Moves.push([i-1, j+1]);
+	// 			}
+	// 			if(this.isValidPosition(i,j+1) && this.containsPawn(i,j+1) == false && !this.visited[i][j+1])
+	// 			{
+	// 				newAdj8Moves.push([i, j+1]);
+	// 			}
+	// 			if(this.isValidPosition(i+1,j+1) && this.containsPawn(i+1,j+1) == false && !this.visited[i+1][j+1])
+	// 			{
+	// 				newAdj8Moves.push([i+1, j+1]);
+	// 			}
+	// 			if(this.isValidPosition(i+1,j) && this.containsPawn(i+1,j) == false && !this.visited[i+1][j])
+	// 			{
+	// 				newAdj8Moves.push([i+1, j]);
+	// 			}
+	// 			if(this.isValidPosition(i+1,j-1) && this.containsPawn(i+1,j-1) == false && !this.visited[i+1][j-1])
+	// 			{
+	// 				newAdj8Moves.push([i+1, j-1]);
+	// 			}
+	// 			if(this.isValidPosition(i,j-1) && this.containsPawn(i,j-1) == false && !this.visited[i][j-1])
+	// 			{
+	// 				newAdj8Moves.push([i, j-1]);
+	// 			}
+	// 		}
+	// 	}
+	// 	else
+	// 	{
+	// 		if(this.inCampBlack(i,j))
+	// 		{
+	// 			if(this.isValidPosition(i-1,j-1) && this.containsPawn(i-1,j-1) == false && !this.visited[i-1][j-1] && this.inCampBlack(i-1,j-1))
+	// 			{
+	// 				newAdj8Moves.push([i-1, j-1]);
+	// 			}
+	// 			if(this.isValidPosition(i-1,j) && this.containsPawn(i-1,j) == false && !this.visited[i-1][j] && this.inCampBlack(i-1,j))
+	// 			{
+	// 				newAdj8Moves.push([i-1,j]);
+	// 			}
+	// 			if(this.isValidPosition(i-1,j+1) && this.containsPawn(i-1,j+1) == false && !this.visited[i-1][j+1] && this.inCampBlack(i-1,j+1))
+	// 			{
+	// 				newAdj8Moves.push([i-1, j+1]);
+	// 			}
+	// 			if(this.isValidPosition(i,j+1) && this.containsPawn(i,j+1) == false && !this.visited[i][j+1] && this.inCampBlack(i,j+1))
+	// 			{
+	// 				newAdj8Moves.push([i, j+1]);
+	// 			}
+	// 			if(this.isValidPosition(i+1,j+1) && this.containsPawn(i+1,j+1) == false && !this.visited[i+1][j+1] && this.inCampBlack(i+1,j+1))
+	// 			{
+	// 				newAdj8Moves.push([i+1, j+1]);
+	// 			}
+	// 			if(this.isValidPosition(i+1,j) && this.containsPawn(i+1,j) == false && !this.visited[i+1][j] && this.inCampBlack(i+1,j))
+	// 			{
+	// 				newAdj8Moves.push([i+1, j]);
+	// 			}
+	// 			if(this.isValidPosition(i+1,j-1) && this.containsPawn(i+1,j-1) == false && !this.visited[i+1][j-1] && this.inCampBlack(i+1,j-1))
+	// 			{
+	// 				newAdj8Moves.push([i+1, j-1]);
+	// 			}
+	// 			if(this.isValidPosition(i,j-1) && this.containsPawn(i,j-1) == false && !this.visited[i][j-1] && this.inCampBlack(i,j-1))
+	// 			{
+	// 				newAdj8Moves.push([i,j-1]);
+	// 			}
+			
+	// 		}
+	// 		else
+	// 		{
+	// 			if(this.isValidPosition(i-1,j-1) && this.containsPawn(i-1,j-1) == false && !this.visited[i-1][j-1])
+	// 			{
+	// 				newAdj8Moves.push([i-1, j-1]);
+	// 			}
+	// 			if(this.isValidPosition(i-1,j) && this.containsPawn(i-1,j) == false && !this.visited[i-1][j])
+	// 			{
+	// 				newAdj8Moves.push([i-1, j]);
+	// 			}
+	// 			if(this.isValidPosition(i-1,j+1) && this.containsPawn(i-1,j+1) == false && !this.visited[i-1][j+1])
+	// 			{
+	// 				newAdj8Moves.push([i-1, j+1]);
+	// 			}
+	// 			if(this.isValidPosition(i,j+1) && this.containsPawn(i,j+1) == false && !this.visited[i][j+1])
+	// 			{
+	// 				newAdj8Moves.push([i, j+1]);
+	// 			}
+	// 			if(this.isValidPosition(i+1,j+1) && this.containsPawn(i+1,j+1) == false && !this.visited[i+1][j+1])
+	// 			{
+	// 				newAdj8Moves.push([i+1, j+1]);
+	// 			}
+	// 			if(this.isValidPosition(i+1,j) && this.containsPawn(i+1,j) == false && !this.visited[i+1][j])
+	// 			{
+	// 				newAdj8Moves.push([i+1, j]);
+	// 			}
+	// 			if(this.isValidPosition(i+1,j-1) && this.containsPawn(i+1,j-1) == false && !this.visited[i+1][j-1])
+	// 			{
+	// 				newAdj8Moves.push([i+1, j-1]);
+	// 			}
+	// 			if(this.isValidPosition(i,j-1) && this.containsPawn(i,j-1) == false && !this.visited[i][j-1])
+	// 			{
+	// 				newAdj8Moves.push([i, j-1]);
+	// 			}
+	// 		}
+	// 	}
+	// 	return newAdj8Moves;
+
+	// }
+
+	public get8AdjMoveIndices(i, j) {
 		let newAdj8Moves = new Array();
-		if(this.player == "BLACK")
-		{
-			if(this.inCampWhite(i,j))
-			{
-				if(this.isValidPosition(i-1,j-1) && this.containsPawn(i-1,j-1) == false && !this.visited[i-1][j-1] && this.inCampWhite(i-1,j-1))
-				{
-					newAdj8Moves.push([i-1, j-1]);
-				}
-				if(this.isValidPosition(i-1,j) && this.containsPawn(i-1,j) == false && !this.visited[i-1][j] && this.inCampWhite(i-1,j))
-				{
-					newAdj8Moves.push([i-1,j]);
-				}
-				if(this.isValidPosition(i-1,j+1) && this.containsPawn(i-1,j+1) == false && !this.visited[i-1][j+1] && this.inCampWhite(i-1,j+1))
-				{
-					newAdj8Moves.push([i-1,j+1]);
-				}
-				if(this.isValidPosition(i,j+1) && this.containsPawn(i,j+1) == false && !this.visited[i][j+1] && this.inCampWhite(i,j+1))
-				{
-					newAdj8Moves.push([i, j+1]);
-				}
-				if(this.isValidPosition(i+1,j+1) && this.containsPawn(i+1,j+1) == false && !this.visited[i+1][j+1] && this.inCampWhite(i+1,j+1))
-				{
-					newAdj8Moves.push([i+1, j+1]);
-				}
-				if(this.isValidPosition(i+1,j) && this.containsPawn(i+1,j) == false && !this.visited[i+1][j] && this.inCampWhite(i+1,j))
-				{
-					newAdj8Moves.push([i+1, j]);
-				}
-				if(this.isValidPosition(i+1,j-1) && this.containsPawn(i+1,j-1) == false && !this.visited[i+1][j-1] && this.inCampWhite(i+1,j-1))
-				{
-					newAdj8Moves.push([i+1, j-1]);
-				}
-				if(this.isValidPosition(i,j-1) && this.containsPawn(i,j-1) == false && !this.visited[i][j-1] && this.inCampWhite(i,j-1))
-				{
-					newAdj8Moves.push([i, j-1]);
-				}
-			
-			}
-			else
-			{
-				if(this.isValidPosition(i-1,j-1) && this.containsPawn(i-1,j-1) == false && !this.visited[i-1][j-1])
-				{
-					newAdj8Moves.push([i-1,j-1]);
-				}
-				if(this.isValidPosition(i-1,j) && this.containsPawn(i-1,j) == false && !this.visited[i-1][j])
-				{
-					newAdj8Moves.push([i-1, j]);
-				}
-				if(this.isValidPosition(i-1,j+1) && this.containsPawn(i-1,j+1) == false && !this.visited[i-1][j+1])
-				{
-					newAdj8Moves.push([i-1, j+1]);
-				}
-				if(this.isValidPosition(i,j+1) && this.containsPawn(i,j+1) == false && !this.visited[i][j+1])
-				{
-					newAdj8Moves.push([i, j+1]);
-				}
-				if(this.isValidPosition(i+1,j+1) && this.containsPawn(i+1,j+1) == false && !this.visited[i+1][j+1])
-				{
-					newAdj8Moves.push([i+1, j+1]);
-				}
-				if(this.isValidPosition(i+1,j) && this.containsPawn(i+1,j) == false && !this.visited[i+1][j])
-				{
-					newAdj8Moves.push([i+1, j]);
-				}
-				if(this.isValidPosition(i+1,j-1) && this.containsPawn(i+1,j-1) == false && !this.visited[i+1][j-1])
-				{
-					newAdj8Moves.push([i+1, j-1]);
-				}
-				if(this.isValidPosition(i,j-1) && this.containsPawn(i,j-1) == false && !this.visited[i][j-1])
-				{
-					newAdj8Moves.push([i, j-1]);
-				}
-			}
-		}
-		else
-		{
-			if(this.inCampBlack(i,j))
-			{
-				if(this.isValidPosition(i-1,j-1) && this.containsPawn(i-1,j-1) == false && !this.visited[i-1][j-1] && this.inCampBlack(i-1,j-1))
-				{
-					newAdj8Moves.push([i-1, j-1]);
-				}
-				if(this.isValidPosition(i-1,j) && this.containsPawn(i-1,j) == false && !this.visited[i-1][j] && this.inCampBlack(i-1,j))
-				{
-					newAdj8Moves.push([i-1,j]);
-				}
-				if(this.isValidPosition(i-1,j+1) && this.containsPawn(i-1,j+1) == false && !this.visited[i-1][j+1] && this.inCampBlack(i-1,j+1))
-				{
-					newAdj8Moves.push([i-1, j+1]);
-				}
-				if(this.isValidPosition(i,j+1) && this.containsPawn(i,j+1) == false && !this.visited[i][j+1] && this.inCampBlack(i,j+1))
-				{
-					newAdj8Moves.push([i, j+1]);
-				}
-				if(this.isValidPosition(i+1,j+1) && this.containsPawn(i+1,j+1) == false && !this.visited[i+1][j+1] && this.inCampBlack(i+1,j+1))
-				{
-					newAdj8Moves.push([i+1, j+1]);
-				}
-				if(this.isValidPosition(i+1,j) && this.containsPawn(i+1,j) == false && !this.visited[i+1][j] && this.inCampBlack(i+1,j))
-				{
-					newAdj8Moves.push([i+1, j]);
-				}
-				if(this.isValidPosition(i+1,j-1) && this.containsPawn(i+1,j-1) == false && !this.visited[i+1][j-1] && this.inCampBlack(i+1,j-1))
-				{
-					newAdj8Moves.push([i+1, j-1]);
-				}
-				if(this.isValidPosition(i,j-1) && this.containsPawn(i,j-1) == false && !this.visited[i][j-1] && this.inCampBlack(i,j-1))
-				{
-					newAdj8Moves.push([i,j-1]);
-				}
-			
-			}
-			else
-			{
-				if(this.isValidPosition(i-1,j-1) && this.containsPawn(i-1,j-1) == false && !this.visited[i-1][j-1])
-				{
-					newAdj8Moves.push([i-1, j-1]);
-				}
-				if(this.isValidPosition(i-1,j) && this.containsPawn(i-1,j) == false && !this.visited[i-1][j])
-				{
-					newAdj8Moves.push([i-1, j]);
-				}
-				if(this.isValidPosition(i-1,j+1) && this.containsPawn(i-1,j+1) == false && !this.visited[i-1][j+1])
-				{
-					newAdj8Moves.push([i-1, j+1]);
-				}
-				if(this.isValidPosition(i,j+1) && this.containsPawn(i,j+1) == false && !this.visited[i][j+1])
-				{
-					newAdj8Moves.push([i, j+1]);
-				}
-				if(this.isValidPosition(i+1,j+1) && this.containsPawn(i+1,j+1) == false && !this.visited[i+1][j+1])
-				{
-					newAdj8Moves.push([i+1, j+1]);
-				}
-				if(this.isValidPosition(i+1,j) && this.containsPawn(i+1,j) == false && !this.visited[i+1][j])
-				{
-					newAdj8Moves.push([i+1, j]);
-				}
-				if(this.isValidPosition(i+1,j-1) && this.containsPawn(i+1,j-1) == false && !this.visited[i+1][j-1])
-				{
-					newAdj8Moves.push([i+1, j-1]);
-				}
-				if(this.isValidPosition(i,j-1) && this.containsPawn(i,j-1) == false && !this.visited[i][j-1])
-				{
-					newAdj8Moves.push([i, j-1]);
-				}
-			}
-		}
-		return newAdj8Moves;
-
-	}
-
-	public getJumpsIndices(x: number, y: number) {
-		let newJumpMoves = new Array();
 		
-		this.jumpQueue.push(new Tile(x, y, ""));
-		this.visited[x][y] = true;
-		console.log("Before while loop")
-		while(this.jumpQueue.length != 0)
-		{
-			console.log("Entered beginning of while loop")
-			let t = this.jumpQueue.shift();
-			let i = t.getX(), j = t.getY();
-			console.log("i, j, visited:", i, j,  this.visited[i][j])
-			//----------------------trying camp oppnt----
-			if(this.player == "BLACK")
-			{
-				if(this.inCampWhite(x,y))
-				{
-					if(this.isValidPosition(i-2,j-2) && this.containsPawn(i-1,j-1) && !this.visited[i-2][j-2])
-					{
-						if(this.inCampWhite(i-2,j-2))
-							newJumpMoves.push([i-2, j-2]); 
-						this.jumpQueue.push(new Tile(i-2,j-2,t.getPreviousMoves()+ "J " + i + "," + j + " " + (i-2) + "," + (j-2) + "\n"));
-						this.visited[i-2][j-2] = true;
+			for(let di = -1; di <= 1; di++ ) {
+				for(let dj = -1; dj <= 1; dj++ ) {
+					let nextI = i + di;
+					let nextJ = j + dj;
+
+					// continue when di and dj = 0 because we dont need that position.
+					if(nextI == i && nextJ == j) {
+						continue;
 					}
-					if(this.isValidPosition(i-2,j) && this.containsPawn(i-1,j) && !this.visited[i-2][j])
-					{
-						if(this.inCampWhite(i-2,j))
-							newJumpMoves.push([i-2, j]);
-						this.jumpQueue.push(new Tile(i-2,j,t.getPreviousMoves()+"J " + i + "," + j + " " + (i-2) + "," + (j) + "\n"));
-						this.visited[i-2][j] = true;
-					}
-					if(this.isValidPosition(i-2,j+2) && this.containsPawn(i-1,j+1) && !this.visited[i-2][j+2])
-					{
-						if(this.inCampWhite(i-2,j+2))
-							newJumpMoves.push([i-2, j+2]);
-						this.jumpQueue.push(new Tile(i-2,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i-2) + "," + (j+2) + "\n"));
-						this.visited[i-2][j+2] = true;
-					}
-					if(this.isValidPosition(i,j+2) && this.containsPawn(i,j+1) && !this.visited[i][j+2])
-					{
-						if(this.inCampWhite(i,j+2))
-							newJumpMoves.push([i, j+2]);
-						this.jumpQueue.push(new Tile(i,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i) + "," + (j+2) + "\n"));
-						this.visited[i][j+2] = true;
-					}
-					if(this.isValidPosition(i+2,j+2) && this.containsPawn(i+1,j+1) && !this.visited[i+2][j+2])
-					{
-						if(this.inCampWhite(i+2,j+2))
-							newJumpMoves.push([i+2, j+2]);
-						this.jumpQueue.push(new Tile(i+2,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j+2) + "\n"));
-						this.visited[i+2][j+2] = true;
-					}
-					if(this.isValidPosition(i+2,j) && this.containsPawn(i+1,j) && !this.visited[i+2][j])
-					{
-						if(this.inCampWhite(i+2,j))
-							newJumpMoves.push([i+2, j]);
-						this.jumpQueue.push(new Tile(i+2,j,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j) + "\n"));
-						this.visited[i+2][j] = true;
-					}
-					if(this.isValidPosition(i+2,j-2) && this.containsPawn(i+1,j-1) && !this.visited[i+2][j-2])
-					{
-						if(this.inCampWhite(i+2,j-2))
-							newJumpMoves.push([i+2, j-2]);
-						this.jumpQueue.push(new Tile(i+2,j-2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j-2) + "\n"));
-						this.visited[i+2][j-2] = true;
-					}
-					if(this.isValidPosition(i,j-2) && this.containsPawn(i, j-1) && !this.visited[i][j-2])
-					{
-						if(this.inCampWhite(i,j-2))
-							newJumpMoves.push([i, j-2]);
-						this.jumpQueue.push(new Tile(i,j-2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i) + "," + (j-2) + "\n"));
-						this.visited[i][j-2] = true;
-					}
-				}
-				else
-				{
-					if(this.isValidPosition(i-2,j-2) && this.containsPawn(i-1,j-1) && !this.visited[i-2][j-2])
-					{
-						newJumpMoves.push([i-2, j-2]); 
-						this.jumpQueue.push(new Tile(i-2,j-2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i-2) + "," + (j-2) + "\n"));
-						this.visited[i-2][j-2] = true;
-					}
-					if(this.isValidPosition(i-2,j) && this.containsPawn(i-1,j) && !this.visited[i-2][j])
-					{
-						newJumpMoves.push([i-2, j]);
-						this.jumpQueue.push(new Tile(i-2,j,t.getPreviousMoves()+"J " + i + "," + j + " " + (i-2) + "," + (j) + "\n"));
-						this.visited[i-2][j] = true;
-					}
-					if(this.isValidPosition(i-2,j+2) && this.containsPawn(i-1,j+1) && !this.visited[i-2][j+2])
-					{
-						newJumpMoves.push([i-2, j+2]);
-						this.jumpQueue.push(new Tile(i-2,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i-2) + "," + (j+2) + "\n"));
-						this.visited[i-2][j+2] = true;
-					}
-					if(this.isValidPosition(i,j+2) && this.containsPawn(i,j+1) && !this.visited[i][j+2])
-					{
-						newJumpMoves.push([i, j+2]);
-						this.jumpQueue.push(new Tile(i,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i) + "," + (j+2) + "\n"));
-						this.visited[i][j+2] = true;
-					}
-					if(this.isValidPosition(i+2,j+2) && this.containsPawn(i+1,j+1) && !this.visited[i+2][j+2])
-					{
-						newJumpMoves.push([i+2, j+2]);
-						this.jumpQueue.push(new Tile(i+2,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j+2) + "\n"));
-						this.visited[i+2][j+2] = true;
-					}
-					if(this.isValidPosition(i+2,j) && this.containsPawn(i+1,j) && !this.visited[i+2][j])
-					{
-						newJumpMoves.push([i+2, j]);
-						this.jumpQueue.push(new Tile(i+2,j,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j) + "\n"));
-						this.visited[i+2][j] = true;
-					}
-					if(this.isValidPosition(i+2,j-2) && this.containsPawn(i+1,j-1) && !this.visited[i+2][j-2])
-					{
-						newJumpMoves.push([i+2, j-2]);
-						this.jumpQueue.push(new Tile(i+2,j-2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j-2) + "\n"));
-						this.visited[i+2][j-2] = true;
-					}
-					if(this.isValidPosition(i,j-2) && this.containsPawn(i, j-1) && !this.visited[i][j-2])
-					{
-						newJumpMoves.push([i, j-2]);
-						this.jumpQueue.push(new Tile(i,j-2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i) + "," + (j-2) + "\n"));
-						this.visited[i][j-2] = true;
-					}
-				} 
-			}
-			else
-			{
-				if(this.inCampBlack(x,y))
-				{
-					if(this.isValidPosition(i-2,j-2) && this.containsPawn(i-1,j-1) && !this.visited[i-2][j-2])
-					{
-						if(this.inCampBlack(i-2,j-2))
-							newJumpMoves.push([i-2, j-2]); 
-						this.jumpQueue.push(new Tile(i-2,j-2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i-2) + "," + (j-2) + "\n"));
-						this.visited[i-2][j-2] = true;
+
+					if(this.isValidPosition(nextI, nextJ) && !this.containsPawn(nextI, nextJ) && !this.visited[nextI][nextJ]) {
+						
+						if(this.player == "BLACK") {
+							// add only if it is not in opponent home camp, OR if it is, and the next position is also in oppnt home camp.
+							if(!this.inCampWhite(i, j) || (this.inCampWhite(i, j) && this.inCampWhite(nextI, nextJ))) {
+								//let previousMoves = "E" + i + "," + j + " " + nextI + "," + nextJ + "\n";
+								newAdj8Moves.push([nextI, nextJ])
+							}
+						}
+						else {
+							// add only if it is not in opponent home camp, OR if it is, and the next position is also in oppnt home camp.
+							if(!this.inCampBlack(i, j) || (this.inCampBlack(i, j) && this.inCampBlack(nextI, nextJ))) {
+								//let previousMoves = "E" + i + "," + j + " " + nextI + "," + nextJ + "\n";
+								newAdj8Moves.push([nextI, nextJ])
+							}
+						}
 						
 					}
-					if(this.isValidPosition(i-2,j) && this.containsPawn(i-1,j) && !this.visited[i-2][j])
-					{
-						if(this.inCampBlack(i-2,j))
-							newJumpMoves.push([i-2, j]);
-						this.jumpQueue.push(new Tile(i-2,j,t.getPreviousMoves()+"J " + i + "," + j + " " + (i-2) + "," + (j) + "\n"));
-						this.visited[i-2][j] = true;
-					}
-					if(this.isValidPosition(i-2,j+2) && this.containsPawn(i-1,j+1) && !this.visited[i-2][j+2])
-					{
-						if(this.inCampBlack(i-2,j+2))
-							newJumpMoves.push([i-2, j+2]);
-						this.jumpQueue.push(new Tile(i-2,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i-2) + "," + (j+2) + "\n"));
-						this.visited[i-2][j+2] = true;
-					}
-					if(this.isValidPosition(i,j+2) && this.containsPawn(i,j+1) && !this.visited[i][j+2])
-					{
-						if(this.inCampBlack(i,j+2))
-							newJumpMoves.push([i, j+2]);
-						this.jumpQueue.push(new Tile(i,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i) + "," + (j+2) + "\n"));
-						this.visited[i][j+2] = true;
-					}
-					if(this.isValidPosition(i+2,j+2) && this.containsPawn(i+1,j+1) && !this.visited[i+2][j+2])
-					{
-						if(this.inCampBlack(i+2,j+2))
-							newJumpMoves.push([i+2, j+2]);
-						this.jumpQueue.push(new Tile(i+2,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j+2) + "\n"));
-						this.visited[i+2][j+2] = true;
-					}
-					if(this.isValidPosition(i+2,j) && this.containsPawn(i+1,j) && !this.visited[i+2][j])
-					{
-						if(this.inCampBlack(i+2,j))
-							newJumpMoves.push([i+2, j]);
-						this.jumpQueue.push(new Tile(i+2,j,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j) + "\n"));
-						this.visited[i+2][j] = true;
-					}
-					if(this.isValidPosition(i+2,j-2) && this.containsPawn(i+1,j-1) && !this.visited[i+2][j-2])
-					{
-						if(this.inCampBlack(i+2,j-2))
-							newJumpMoves.push([i+2, j-2]);
-						this.jumpQueue.push(new Tile(i+2,j-2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j-2) + "\n"));
-						this.visited[i+2][j-2] = true;
-					}
-					if(this.isValidPosition(i,j-2) && this.containsPawn(i, j-1) && !this.visited[i][j-2])
-					{
-						if(this.inCampBlack(i,j-2))
-							newJumpMoves.push([i, j-2]);
-						this.jumpQueue.push(new Tile(i,j-2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i) + "," + (j-2) + "\n"));
-						this.visited[i][j-2] = true;
-					}
-				}
-				else
-				{
-					if(this.isValidPosition(i-2,j-2) && this.containsPawn(i-1,j-1) && !this.visited[i-2][j-2])
-					{
-						newJumpMoves.push([i-2, j-2]); 
-						this.jumpQueue.push(new Tile(i-2,j-2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i-2) + "," + (j-2) + "\n"));
-						this.visited[i-2][j-2] = true;
-					}
-					if(this.isValidPosition(i-2,j) && this.containsPawn(i-1,j) && !this.visited[i-2][j])
-					{
-						newJumpMoves.push([i-2, j]);
-						this.jumpQueue.push(new Tile(i-2,j,t.getPreviousMoves()+"J " + i + "," + j + " " + (i-2) + "," + (j) + "\n"));
-						this.visited[i-2][j] = true;
-					}
-					if(this.isValidPosition(i-2,j+2) && this.containsPawn(i-1,j+1) && !this.visited[i-2][j+2])
-					{
-						newJumpMoves.push([i-2, j+2]);
-						this.jumpQueue.push(new Tile(i-2,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i-2) + "," + (j+2) + "\n"));
-						this.visited[i-2][j+2] = true;
-					}
-					if(this.isValidPosition(i,j+2) && this.containsPawn(i,j+1) && !this.visited[i][j+2])
-					{
-						newJumpMoves.push([i, j+2]);
-						this.jumpQueue.push(new Tile(i,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i) + "," + (j+2) + "\n"));
-						this.visited[i][j+2] = true;
-					}
-					if(this.isValidPosition(i+2,j+2) && this.containsPawn(i+1,j+1) && !this.visited[i+2][j+2])
-					{
-						newJumpMoves.push([i+2, j+2]);
-						this.jumpQueue.push(new Tile(i+2,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j+2) + "\n"));
-						this.visited[i+2][j+2] = true;
-					}
-					if(this.isValidPosition(i+2,j) && this.containsPawn(i+1,j) && !this.visited[i+2][j])
-					{
-						newJumpMoves.push([i+2, j]);
-						this.jumpQueue.push(new Tile(i+2,j,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j) + "\n"));
-						this.visited[i+2][j] = true;
-					}
-					if(this.isValidPosition(i+2,j-2) && this.containsPawn(i+1,j-1) && !this.visited[i+2][j-2])
-					{
-						newJumpMoves.push([i+2, j-2]);
-						this.jumpQueue.push(new Tile(i+2,j-2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j-2) + "\n"));
-						this.visited[i+2][j-2] = true;
-					}
-					if(this.isValidPosition(i,j-2) && this.containsPawn(i, j-1) && !this.visited[i][j-2])
-					{
-						newJumpMoves.push([i, j-2]);
-						this.jumpQueue.push(new Tile(i,j-2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i) + "," + (j-2) + "\n"));
-						this.visited[i][j-2] = true;
-					}
 				}
 			}
-			//----------------------
+		return newAdj8Moves;
+	}
+
+	// public getJumpsIndices(x: number, y: number) {
+	// 	let newJumpMoves = new Array();
+		
+	// 	this.jumpQueue.push(new Tile(x, y, ""));
+	// 	this.visited[x][y] = true;
+	// 	console.log("Before while loop")
+	// 	while(this.jumpQueue.length != 0)
+	// 	{
+	// 		console.log("Entered beginning of while loop")
+	// 		let t = this.jumpQueue.shift();
+	// 		let i = t.getX(), j = t.getY();
+	// 		console.log("i, j, visited:", i, j,  this.visited[i][j])
+	// 		//----------------------trying camp oppnt----
+	// 		if(this.player == "BLACK")
+	// 		{
+	// 			if(this.inCampWhite(x,y))
+	// 			{
+	// 				if(this.isValidPosition(i-2,j-2) && this.containsPawn(i-1,j-1) && !this.visited[i-2][j-2])
+	// 				{
+	// 					if(this.inCampWhite(i-2,j-2))
+	// 						newJumpMoves.push([i-2, j-2]); 
+	// 					this.jumpQueue.push(new Tile(i-2,j-2,t.getPreviousMoves()+ "J " + i + "," + j + " " + (i-2) + "," + (j-2) + "\n"));
+	// 					this.visited[i-2][j-2] = true;
+	// 				}
+	// 				if(this.isValidPosition(i-2,j) && this.containsPawn(i-1,j) && !this.visited[i-2][j])
+	// 				{
+	// 					if(this.inCampWhite(i-2,j))
+	// 						newJumpMoves.push([i-2, j]);
+	// 					this.jumpQueue.push(new Tile(i-2,j,t.getPreviousMoves()+"J " + i + "," + j + " " + (i-2) + "," + (j) + "\n"));
+	// 					this.visited[i-2][j] = true;
+	// 				}
+	// 				if(this.isValidPosition(i-2,j+2) && this.containsPawn(i-1,j+1) && !this.visited[i-2][j+2])
+	// 				{
+	// 					if(this.inCampWhite(i-2,j+2))
+	// 						newJumpMoves.push([i-2, j+2]);
+	// 					this.jumpQueue.push(new Tile(i-2,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i-2) + "," + (j+2) + "\n"));
+	// 					this.visited[i-2][j+2] = true;
+	// 				}
+	// 				if(this.isValidPosition(i,j+2) && this.containsPawn(i,j+1) && !this.visited[i][j+2])
+	// 				{
+	// 					if(this.inCampWhite(i,j+2))
+	// 						newJumpMoves.push([i, j+2]);
+	// 					this.jumpQueue.push(new Tile(i,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i) + "," + (j+2) + "\n"));
+	// 					this.visited[i][j+2] = true;
+	// 				}
+	// 				if(this.isValidPosition(i+2,j+2) && this.containsPawn(i+1,j+1) && !this.visited[i+2][j+2])
+	// 				{
+	// 					if(this.inCampWhite(i+2,j+2))
+	// 						newJumpMoves.push([i+2, j+2]);
+	// 					this.jumpQueue.push(new Tile(i+2,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j+2) + "\n"));
+	// 					this.visited[i+2][j+2] = true;
+	// 				}
+	// 				if(this.isValidPosition(i+2,j) && this.containsPawn(i+1,j) && !this.visited[i+2][j])
+	// 				{
+	// 					if(this.inCampWhite(i+2,j))
+	// 						newJumpMoves.push([i+2, j]);
+	// 					this.jumpQueue.push(new Tile(i+2,j,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j) + "\n"));
+	// 					this.visited[i+2][j] = true;
+	// 				}
+	// 				if(this.isValidPosition(i+2,j-2) && this.containsPawn(i+1,j-1) && !this.visited[i+2][j-2])
+	// 				{
+	// 					if(this.inCampWhite(i+2,j-2))
+	// 						newJumpMoves.push([i+2, j-2]);
+	// 					this.jumpQueue.push(new Tile(i+2,j-2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j-2) + "\n"));
+	// 					this.visited[i+2][j-2] = true;
+	// 				}
+	// 				if(this.isValidPosition(i,j-2) && this.containsPawn(i, j-1) && !this.visited[i][j-2])
+	// 				{
+	// 					if(this.inCampWhite(i,j-2))
+	// 						newJumpMoves.push([i, j-2]);
+	// 					this.jumpQueue.push(new Tile(i,j-2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i) + "," + (j-2) + "\n"));
+	// 					this.visited[i][j-2] = true;
+	// 				}
+	// 			}
+	// 			else
+	// 			{
+	// 				if(this.isValidPosition(i-2,j-2) && this.containsPawn(i-1,j-1) && !this.visited[i-2][j-2])
+	// 				{
+	// 					newJumpMoves.push([i-2, j-2]); 
+	// 					this.jumpQueue.push(new Tile(i-2,j-2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i-2) + "," + (j-2) + "\n"));
+	// 					this.visited[i-2][j-2] = true;
+	// 				}
+	// 				if(this.isValidPosition(i-2,j) && this.containsPawn(i-1,j) && !this.visited[i-2][j])
+	// 				{
+	// 					newJumpMoves.push([i-2, j]);
+	// 					this.jumpQueue.push(new Tile(i-2,j,t.getPreviousMoves()+"J " + i + "," + j + " " + (i-2) + "," + (j) + "\n"));
+	// 					this.visited[i-2][j] = true;
+	// 				}
+	// 				if(this.isValidPosition(i-2,j+2) && this.containsPawn(i-1,j+1) && !this.visited[i-2][j+2])
+	// 				{
+	// 					newJumpMoves.push([i-2, j+2]);
+	// 					this.jumpQueue.push(new Tile(i-2,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i-2) + "," + (j+2) + "\n"));
+	// 					this.visited[i-2][j+2] = true;
+	// 				}
+	// 				if(this.isValidPosition(i,j+2) && this.containsPawn(i,j+1) && !this.visited[i][j+2])
+	// 				{
+	// 					newJumpMoves.push([i, j+2]);
+	// 					this.jumpQueue.push(new Tile(i,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i) + "," + (j+2) + "\n"));
+	// 					this.visited[i][j+2] = true;
+	// 				}
+	// 				if(this.isValidPosition(i+2,j+2) && this.containsPawn(i+1,j+1) && !this.visited[i+2][j+2])
+	// 				{
+	// 					newJumpMoves.push([i+2, j+2]);
+	// 					this.jumpQueue.push(new Tile(i+2,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j+2) + "\n"));
+	// 					this.visited[i+2][j+2] = true;
+	// 				}
+	// 				if(this.isValidPosition(i+2,j) && this.containsPawn(i+1,j) && !this.visited[i+2][j])
+	// 				{
+	// 					newJumpMoves.push([i+2, j]);
+	// 					this.jumpQueue.push(new Tile(i+2,j,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j) + "\n"));
+	// 					this.visited[i+2][j] = true;
+	// 				}
+	// 				if(this.isValidPosition(i+2,j-2) && this.containsPawn(i+1,j-1) && !this.visited[i+2][j-2])
+	// 				{
+	// 					newJumpMoves.push([i+2, j-2]);
+	// 					this.jumpQueue.push(new Tile(i+2,j-2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j-2) + "\n"));
+	// 					this.visited[i+2][j-2] = true;
+	// 				}
+	// 				if(this.isValidPosition(i,j-2) && this.containsPawn(i, j-1) && !this.visited[i][j-2])
+	// 				{
+	// 					newJumpMoves.push([i, j-2]);
+	// 					this.jumpQueue.push(new Tile(i,j-2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i) + "," + (j-2) + "\n"));
+	// 					this.visited[i][j-2] = true;
+	// 				}
+	// 			} 
+	// 		}
+	// 		else
+	// 		{
+	// 			if(this.inCampBlack(x,y))
+	// 			{
+	// 				if(this.isValidPosition(i-2,j-2) && this.containsPawn(i-1,j-1) && !this.visited[i-2][j-2])
+	// 				{
+	// 					if(this.inCampBlack(i-2,j-2))
+	// 						newJumpMoves.push([i-2, j-2]); 
+	// 					this.jumpQueue.push(new Tile(i-2,j-2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i-2) + "," + (j-2) + "\n"));
+	// 					this.visited[i-2][j-2] = true;
+						
+	// 				}
+	// 				if(this.isValidPosition(i-2,j) && this.containsPawn(i-1,j) && !this.visited[i-2][j])
+	// 				{
+	// 					if(this.inCampBlack(i-2,j))
+	// 						newJumpMoves.push([i-2, j]);
+	// 					this.jumpQueue.push(new Tile(i-2,j,t.getPreviousMoves()+"J " + i + "," + j + " " + (i-2) + "," + (j) + "\n"));
+	// 					this.visited[i-2][j] = true;
+	// 				}
+	// 				if(this.isValidPosition(i-2,j+2) && this.containsPawn(i-1,j+1) && !this.visited[i-2][j+2])
+	// 				{
+	// 					if(this.inCampBlack(i-2,j+2))
+	// 						newJumpMoves.push([i-2, j+2]);
+	// 					this.jumpQueue.push(new Tile(i-2,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i-2) + "," + (j+2) + "\n"));
+	// 					this.visited[i-2][j+2] = true;
+	// 				}
+	// 				if(this.isValidPosition(i,j+2) && this.containsPawn(i,j+1) && !this.visited[i][j+2])
+	// 				{
+	// 					if(this.inCampBlack(i,j+2))
+	// 						newJumpMoves.push([i, j+2]);
+	// 					this.jumpQueue.push(new Tile(i,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i) + "," + (j+2) + "\n"));
+	// 					this.visited[i][j+2] = true;
+	// 				}
+	// 				if(this.isValidPosition(i+2,j+2) && this.containsPawn(i+1,j+1) && !this.visited[i+2][j+2])
+	// 				{
+	// 					if(this.inCampBlack(i+2,j+2))
+	// 						newJumpMoves.push([i+2, j+2]);
+	// 					this.jumpQueue.push(new Tile(i+2,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j+2) + "\n"));
+	// 					this.visited[i+2][j+2] = true;
+	// 				}
+	// 				if(this.isValidPosition(i+2,j) && this.containsPawn(i+1,j) && !this.visited[i+2][j])
+	// 				{
+	// 					if(this.inCampBlack(i+2,j))
+	// 						newJumpMoves.push([i+2, j]);
+	// 					this.jumpQueue.push(new Tile(i+2,j,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j) + "\n"));
+	// 					this.visited[i+2][j] = true;
+	// 				}
+	// 				if(this.isValidPosition(i+2,j-2) && this.containsPawn(i+1,j-1) && !this.visited[i+2][j-2])
+	// 				{
+	// 					if(this.inCampBlack(i+2,j-2))
+	// 						newJumpMoves.push([i+2, j-2]);
+	// 					this.jumpQueue.push(new Tile(i+2,j-2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j-2) + "\n"));
+	// 					this.visited[i+2][j-2] = true;
+	// 				}
+	// 				if(this.isValidPosition(i,j-2) && this.containsPawn(i, j-1) && !this.visited[i][j-2])
+	// 				{
+	// 					if(this.inCampBlack(i,j-2))
+	// 						newJumpMoves.push([i, j-2]);
+	// 					this.jumpQueue.push(new Tile(i,j-2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i) + "," + (j-2) + "\n"));
+	// 					this.visited[i][j-2] = true;
+	// 				}
+	// 			}
+	// 			else
+	// 			{
+	// 				if(this.isValidPosition(i-2,j-2) && this.containsPawn(i-1,j-1) && !this.visited[i-2][j-2])
+	// 				{
+	// 					newJumpMoves.push([i-2, j-2]); 
+	// 					this.jumpQueue.push(new Tile(i-2,j-2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i-2) + "," + (j-2) + "\n"));
+	// 					this.visited[i-2][j-2] = true;
+	// 				}
+	// 				if(this.isValidPosition(i-2,j) && this.containsPawn(i-1,j) && !this.visited[i-2][j])
+	// 				{
+	// 					newJumpMoves.push([i-2, j]);
+	// 					this.jumpQueue.push(new Tile(i-2,j,t.getPreviousMoves()+"J " + i + "," + j + " " + (i-2) + "," + (j) + "\n"));
+	// 					this.visited[i-2][j] = true;
+	// 				}
+	// 				if(this.isValidPosition(i-2,j+2) && this.containsPawn(i-1,j+1) && !this.visited[i-2][j+2])
+	// 				{
+	// 					newJumpMoves.push([i-2, j+2]);
+	// 					this.jumpQueue.push(new Tile(i-2,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i-2) + "," + (j+2) + "\n"));
+	// 					this.visited[i-2][j+2] = true;
+	// 				}
+	// 				if(this.isValidPosition(i,j+2) && this.containsPawn(i,j+1) && !this.visited[i][j+2])
+	// 				{
+	// 					newJumpMoves.push([i, j+2]);
+	// 					this.jumpQueue.push(new Tile(i,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i) + "," + (j+2) + "\n"));
+	// 					this.visited[i][j+2] = true;
+	// 				}
+	// 				if(this.isValidPosition(i+2,j+2) && this.containsPawn(i+1,j+1) && !this.visited[i+2][j+2])
+	// 				{
+	// 					newJumpMoves.push([i+2, j+2]);
+	// 					this.jumpQueue.push(new Tile(i+2,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j+2) + "\n"));
+	// 					this.visited[i+2][j+2] = true;
+	// 				}
+	// 				if(this.isValidPosition(i+2,j) && this.containsPawn(i+1,j) && !this.visited[i+2][j])
+	// 				{
+	// 					newJumpMoves.push([i+2, j]);
+	// 					this.jumpQueue.push(new Tile(i+2,j,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j) + "\n"));
+	// 					this.visited[i+2][j] = true;
+	// 				}
+	// 				if(this.isValidPosition(i+2,j-2) && this.containsPawn(i+1,j-1) && !this.visited[i+2][j-2])
+	// 				{
+	// 					newJumpMoves.push([i+2, j-2]);
+	// 					this.jumpQueue.push(new Tile(i+2,j-2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j-2) + "\n"));
+	// 					this.visited[i+2][j-2] = true;
+	// 				}
+	// 				if(this.isValidPosition(i,j-2) && this.containsPawn(i, j-1) && !this.visited[i][j-2])
+	// 				{
+	// 					newJumpMoves.push([i, j-2]);
+	// 					this.jumpQueue.push(new Tile(i,j-2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i) + "," + (j-2) + "\n"));
+	// 					this.visited[i][j-2] = true;
+	// 				}
+	// 			}
+	// 		}
+	// 		//----------------------
+	// 	}
+	// 	console.log("Exited while loop")
+	// 	return newJumpMoves;
+	// }
+
+
+	public getJumpsIndices(x, y): GameState[]
+	{
+		let newJumpMoves = new Array();
+		//--------------------------------------
+		
+		while(this.jumpQueue.length != 0) {
+			//console.log("il")
+			let t = this.jumpQueue.shift();
+			let i = t.getX(), j = t.getY();
+
+			for(let di= -2 ; di <= 2; di = di+2) {
+				for(let dj= -2; dj <=2; dj = dj+2) {
+
+					//console.log(di, dj)
+					let nextI = x + di;
+					let nextJ = y + dj;
+
+					if(nextI == x && nextJ == y) {
+						continue;
+					}
+
+					let obstaclei = x, obstaclej = y;
+					if(di > 0) {
+						obstaclei = x + 1;
+					}
+					else if(di < 0) {
+						obstaclei = x - 1;
+					}
+					if(dj > 0) {
+						obstaclej = y + 1;
+					}
+					else if(dj < 0) {
+						obstaclej = y - 1;
+					}
+
+					if(this.isValidPosition(nextI, nextJ) && this.containsPawn(obstaclei, obstaclej) && !this.visited[nextI][nextJ]) {
+						if(this.player == "BLACK") {
+							let previousMoves = t.getPreviousMoves() + "J " + i + "," + j + " " + nextI + "," + nextJ + "\n";
+							if(!this.inCampWhite(x, y) || (this.inCampWhite(x, y) && this.inCampWhite(nextI, nextJ))) {
+								newJumpMoves.push([nextI, nextJ])
+							}
+							this.jumpQueue.push(new Tile(nextI, nextJ, previousMoves))
+							this.visited[nextI][nextJ] = true;
+						}
+						else {
+							let previousMoves = t.getPreviousMoves() + "J " + i + "," + j + " " + nextI + "," + nextJ + "\n";
+							if(!this.inCampBlack(x, y) || (this.inCampBlack(x, y) && this.inCampBlack(nextI, nextJ))) {
+								newJumpMoves.push([nextI, nextJ])
+							}
+							this.jumpQueue.push(new Tile(nextI, nextJ, previousMoves))
+							this.visited[nextI][nextJ] = true;
+						}
+					}
+
+				}
+			}
 		}
-		console.log("Exited while loop")
+		//console.log("returning jump moves")
 		return newJumpMoves;
+
 	}
 
 }

@@ -210,7 +210,7 @@ export class PlayPageComponent implements OnInit {
 
         // make AI play
         console.log("Handing over to AI")
-        let AIreturnedGamestate = new AlphaBeta().runAlphaBeta(this.minimaxService.currentGamestate, 3);
+        let AIreturnedGamestate = new AlphaBeta().runAlphaBeta(this.minimaxService.currentGamestate, 1);
         console.log("AI returned: ", AIreturnedGamestate.getBoard())
 
         // update gamestate again and display.
@@ -229,7 +229,5 @@ export class PlayPageComponent implements OnInit {
         // clicked on empty.
       }
     }
-    
   }
-
 }
