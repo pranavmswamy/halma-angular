@@ -79,10 +79,10 @@ export class AlphaBeta {
 	public runAlphaBeta(initialState: GameState, depth: number): GameState
 	{
 		this.depth = depth; 
-		console.log("Entering alpha beta")
+		//console.log("Entering alpha beta")
 		let abReturnedValue =  this.maxValue(depth, initialState, Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY);
 		//System.out.println(" ab returned = " + abReturnedValue);
-		console.log("Finished alpha beta")
+		//console.log("Finished alpha beta")
 		let nextGameState: GameState = null, gameOverState: GameState = null;
 		let returnableGameState = null;
         
@@ -91,7 +91,7 @@ export class AlphaBeta {
 		
 		for(let g of this.firstLevel)
 		{
-			console.log("uv = " + g.getUtilityValue() + " ab value = " + g.getAlphaBetaValue() + "prevMoves= " + g.getPreviousMoves());
+			//console.log("uv = " + g.getUtilityValue() + " ab value = " + g.getAlphaBetaValue() + "prevMoves= " + g.getPreviousMoves());
 
 			if(abReturnedValue == g.getAlphaBetaValue() && g.terminalTest() == true)
 			{

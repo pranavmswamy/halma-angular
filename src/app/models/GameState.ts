@@ -416,7 +416,7 @@ export class GameState {
 			actions = actions.concat(newJumpMoves);
 
 		}
-		console.log("Returning actions")
+		//console.log("Returning actions")
 		return actions;
 	}
 	
@@ -790,87 +790,175 @@ export class GameState {
 		return Math.pow(startX-endX,2)+Math.pow(startY-endY, 2);
 	}
 	
+	// public calculateUtilityValue(): number
+	// {
+	// 	let utilityValue = 0;
+	// 	if(this.parent != null) //if it isn't root node
+	// 	{
+	// 		if(this.rootPlayer == "BLACK")
+	// 		{
+	// 			console.log("-----------------BLACK PLAYING----------------------------")		
+	// 			//----------
+	// 			if(this.parent.pawnsPresentInBlackHomeCamp())
+	// 			{
+	// 				let parentBlackHomeCampCount = this.parent.countBlackHomeCampPieces();
+	// 				let currBlackHomeCampCount = this.countBlackHomeCampPieces();
+	// 				if(parentBlackHomeCampCount > currBlackHomeCampCount)
+	// 				{
+	// 					return 2000;
+	// 				}
+					
+	// 			}
+				
+	// 			//----------
+	// 			for(let p of this.black)
+	// 				{
+						
+	// 					for(let i = 14; i < 16 ; i++)
+	// 						for(let j = 11; j < 16 ; j++)
+	// 							if(this.board[i][j] == "." || this.board[i][j] == "W")
+	// 								utilityValue += this.getEuclideanDistance(p.getX(),p.getY(),i,j);
+							
+	// 					for( let j=12; j<16;j++)
+	// 						if(this.board[13][j] == "." || this.board[13][j] == "W")
+	// 							utilityValue += this.getEuclideanDistance(p.getX(),p.getY(),13,j);
+								
+	// 					for( let j=13; j<16;j++)
+	// 						if(this.board[12][j] == "."  || this.board[12][j] == "W") 
+	// 							utilityValue += this.getEuclideanDistance(p.getX(),p.getY(),12,j);			
+						
+	// 					for( let j=14; j<16;j++)
+	// 						if(this.board[11][j] == "." || this.board[11][j] == "W")
+	// 							utilityValue += this.getEuclideanDistance(p.getX(),p.getY(),11,j);
+	// 				}
+	// 			return -utilityValue;
+	// 		}
+	// 		else //if player is white
+	// 		{
+	// 			console.log("-----------------WHITE PLAYING----------------------------")
+	// 			//----------
+	// 			if(this.parent.pawnsPresentInWhiteHomeCamp())
+	// 			{
+	// 				let parentWhiteHomeCampCount = this.parent.countWhiteHomeCampPieces();
+	// 				let currWhiteHomeCampCount = this.countWhiteHomeCampPieces();
+	// 				if(parentWhiteHomeCampCount > currWhiteHomeCampCount)
+	// 				{
+	// 					return 2000;
+	// 				}
+	// 			}
+	// 			//----------	
+				
+				
+	// 			for(let p of this.white)
+	// 				{
+						
+	// 					for(let i = 0; i < 2 ; i++)
+	// 						for(let j = 0; j < 5 ; j++)
+	// 							if(this.board[i][j] == "." || this.board[i][j] == "B")
+	// 								utilityValue += this.getEuclideanDistance(p.getX(),p.getY(),i,j);
+
+	// 					for( let j=0; j<4;j++)
+	// 						if(this.board[2][j] == "." || this.board[2][j] == "B")
+	// 							utilityValue += this.getEuclideanDistance(p.getX(),p.getY(),2,j);
+						
+	// 					for( let j=0; j<3;j++)
+	// 						if(this.board[3][j] == "." || this.board[3][j] == "B")
+	// 							utilityValue += this.getEuclideanDistance(p.getX(),p.getY(),3,j);
+						
+	// 					for( let j=0; j<2;j++)
+	// 						if(this.board[4][j] == "." || this.board[4][j] == "B")
+	// 							utilityValue += this.getEuclideanDistance(p.getX(),p.getY(),4,j);
+						
+	// 				}
+	// 			return -utilityValue;
+	// 		}
+	// 	}
+	// 	else //if it is root node
+	// 	{
+	// 		return -1000000;
+	// 	}
+	// }
+
+	public countWhiteInOpponentCamp() {
+
+		let whiteCount = 0;
+
+		for(let i = 0; i < 2 ; i++)
+			for(let j = 0; j < 5 ; j++)
+				if(this.board[i][j] == "W")
+					whiteCount++;
+
+			for( let j=0; j<4;j++)
+				if(this.board[2][j] == "W")
+					whiteCount++;
+
+			for( let j=0; j<3;j++)
+				if(this.board[3][j] == "W")
+					whiteCount++;
+
+			for( let j=0; j<2;j++)
+				if(this.board[4][j] == "W")
+					whiteCount++;
+
+		return whiteCount;
+	}
+
+
+	public centroidOfEmptyInWhiteOppntCamp() {
+		// start here.
+	}
+
+	// Note - this works only for white playing, where black is played by human.
 	public calculateUtilityValue(): number
 	{
 		let utilityValue = 0;
 		if(this.parent != null) //if it isn't root node
 		{
-			if(this.rootPlayer == "BLACK")
+			
+			console.log("-----------------WHITE PLAYING----------------------------")
+			//---------- for removing from home camp first.
+			if(this.parent.pawnsPresentInWhiteHomeCamp())
 			{
-					
-				//----------
-				if(this.parent.pawnsPresentInBlackHomeCamp())
+				let parentWhiteHomeCampCount = this.parent.countWhiteHomeCampPieces();
+				let currWhiteHomeCampCount = this.countWhiteHomeCampPieces();
+				if(parentWhiteHomeCampCount > currWhiteHomeCampCount)
 				{
-					let parentBlackHomeCampCount = this.parent.countBlackHomeCampPieces();
-					let currBlackHomeCampCount = this.countBlackHomeCampPieces();
-					if(parentBlackHomeCampCount > currBlackHomeCampCount)
-					{
-						return 2000;
-					}
-					
+					return 2000;
 				}
-				
-				//----------
-				for(let p of this.black)
-					{
-						
-						for(let i = 14; i < 16 ; i++)
-							for(let j = 11; j < 16 ; j++)
-								if(this.board[i][j] == "." || this.board[i][j] == "W")
-									utilityValue += this.getEuclideanDistance(p.getX(),p.getY(),i,j);
-							
-						for( let j=12; j<16;j++)
-							if(this.board[13][j] == "." || this.board[13][j] == "W")
-								utilityValue += this.getEuclideanDistance(p.getX(),p.getY(),13,j);
-								
-						for( let j=13; j<16;j++)
-							if(this.board[12][j] == "."  || this.board[12][j] == "W") 
-								utilityValue += this.getEuclideanDistance(p.getX(),p.getY(),12,j);			
-						
-						for( let j=14; j<16;j++)
-							if(this.board[11][j] == "." || this.board[11][j] == "W")
-								utilityValue += this.getEuclideanDistance(p.getX(),p.getY(),11,j);
-					}
-				return -utilityValue;
 			}
-			else //if player is white
-			{
-				//----------
-				if(this.parent.pawnsPresentInWhiteHomeCamp())
-				{
-					let parentWhiteHomeCampCount = this.parent.countWhiteHomeCampPieces();
-					let currWhiteHomeCampCount = this.countWhiteHomeCampPieces();
-					if(parentWhiteHomeCampCount > currWhiteHomeCampCount)
-					{
-						return 2000;
-					}
-				}
-				//----------	
-				
-				
-				for(let p of this.white)
-					{
-						
-						for(let i = 0; i < 2 ; i++)
-							for(let j = 0; j < 5 ; j++)
-								if(this.board[i][j] == "." || this.board[i][j] == "B")
-									utilityValue += this.getEuclideanDistance(p.getX(),p.getY(),i,j);
+			
+			//---------- for adding to oppnt camp immediately
+			if(this.parent.countWhiteInOpponentCamp() < this.countWhiteInOpponentCamp()) {
+				return 2000;
+			}	
 
-						for( let j=0; j<4;j++)
-							if(this.board[2][j] == "." || this.board[2][j] == "B")
-								utilityValue += this.getEuclideanDistance(p.getX(),p.getY(),2,j);
-						
-						for( let j=0; j<3;j++)
-							if(this.board[3][j] == "." || this.board[3][j] == "B")
-								utilityValue += this.getEuclideanDistance(p.getX(),p.getY(),3,j);
-						
-						for( let j=0; j<2;j++)
-							if(this.board[4][j] == "." || this.board[4][j] == "B")
-								utilityValue += this.getEuclideanDistance(p.getX(),p.getY(),4,j);
-						
-					}
-				return -utilityValue;
-			}
+			// calculate centroid
+			let centroid = this.centroidOfEmptyInWhiteOppntCamp();
+			let cx = centroid[0]
+			let cy = centroid[1]
+
+			for(let p of this.white)
+				{
+					
+					for(let i = 0; i < 2 ; i++)
+						for(let j = 0; j < 5 ; j++)
+							if(this.board[i][j] == "." || this.board[i][j] == "B")
+								utilityValue += this.getEuclideanDistance(p.getX(),p.getY(),cx,cy);
+
+					for( let j=0; j<4;j++)
+						if(this.board[2][j] == "." || this.board[2][j] == "B")
+							utilityValue += this.getEuclideanDistance(p.getX(),p.getY(),cx,cy);
+					
+					for( let j=0; j<3;j++)
+						if(this.board[3][j] == "." || this.board[3][j] == "B")
+							utilityValue += this.getEuclideanDistance(p.getX(),p.getY(),cx,cy);
+					
+					for( let j=0; j<2;j++)
+						if(this.board[4][j] == "." || this.board[4][j] == "B")
+							utilityValue += this.getEuclideanDistance(p.getX(),p.getY(),cx,cy);
+					
+				}
+			return -utilityValue;
 		}
 		else //if it is root node
 		{
@@ -878,161 +966,6 @@ export class GameState {
 		}
 	}
 
-	// public get8AdjMoveIndices(i: number, j: number) {
-
-		
-	// 	let newAdj8Moves = new Array();
-	// 	if(this.player == "BLACK")
-	// 	{
-	// 		if(this.inCampWhite(i,j))
-	// 		{
-	// 			if(this.isValidPosition(i-1,j-1) && this.containsPawn(i-1,j-1) == false && !this.visited[i-1][j-1] && this.inCampWhite(i-1,j-1))
-	// 			{
-	// 				newAdj8Moves.push([i-1, j-1]);
-	// 			}
-	// 			if(this.isValidPosition(i-1,j) && this.containsPawn(i-1,j) == false && !this.visited[i-1][j] && this.inCampWhite(i-1,j))
-	// 			{
-	// 				newAdj8Moves.push([i-1,j]);
-	// 			}
-	// 			if(this.isValidPosition(i-1,j+1) && this.containsPawn(i-1,j+1) == false && !this.visited[i-1][j+1] && this.inCampWhite(i-1,j+1))
-	// 			{
-	// 				newAdj8Moves.push([i-1,j+1]);
-	// 			}
-	// 			if(this.isValidPosition(i,j+1) && this.containsPawn(i,j+1) == false && !this.visited[i][j+1] && this.inCampWhite(i,j+1))
-	// 			{
-	// 				newAdj8Moves.push([i, j+1]);
-	// 			}
-	// 			if(this.isValidPosition(i+1,j+1) && this.containsPawn(i+1,j+1) == false && !this.visited[i+1][j+1] && this.inCampWhite(i+1,j+1))
-	// 			{
-	// 				newAdj8Moves.push([i+1, j+1]);
-	// 			}
-	// 			if(this.isValidPosition(i+1,j) && this.containsPawn(i+1,j) == false && !this.visited[i+1][j] && this.inCampWhite(i+1,j))
-	// 			{
-	// 				newAdj8Moves.push([i+1, j]);
-	// 			}
-	// 			if(this.isValidPosition(i+1,j-1) && this.containsPawn(i+1,j-1) == false && !this.visited[i+1][j-1] && this.inCampWhite(i+1,j-1))
-	// 			{
-	// 				newAdj8Moves.push([i+1, j-1]);
-	// 			}
-	// 			if(this.isValidPosition(i,j-1) && this.containsPawn(i,j-1) == false && !this.visited[i][j-1] && this.inCampWhite(i,j-1))
-	// 			{
-	// 				newAdj8Moves.push([i, j-1]);
-	// 			}
-			
-	// 		}
-	// 		else
-	// 		{
-	// 			if(this.isValidPosition(i-1,j-1) && this.containsPawn(i-1,j-1) == false && !this.visited[i-1][j-1])
-	// 			{
-	// 				newAdj8Moves.push([i-1,j-1]);
-	// 			}
-	// 			if(this.isValidPosition(i-1,j) && this.containsPawn(i-1,j) == false && !this.visited[i-1][j])
-	// 			{
-	// 				newAdj8Moves.push([i-1, j]);
-	// 			}
-	// 			if(this.isValidPosition(i-1,j+1) && this.containsPawn(i-1,j+1) == false && !this.visited[i-1][j+1])
-	// 			{
-	// 				newAdj8Moves.push([i-1, j+1]);
-	// 			}
-	// 			if(this.isValidPosition(i,j+1) && this.containsPawn(i,j+1) == false && !this.visited[i][j+1])
-	// 			{
-	// 				newAdj8Moves.push([i, j+1]);
-	// 			}
-	// 			if(this.isValidPosition(i+1,j+1) && this.containsPawn(i+1,j+1) == false && !this.visited[i+1][j+1])
-	// 			{
-	// 				newAdj8Moves.push([i+1, j+1]);
-	// 			}
-	// 			if(this.isValidPosition(i+1,j) && this.containsPawn(i+1,j) == false && !this.visited[i+1][j])
-	// 			{
-	// 				newAdj8Moves.push([i+1, j]);
-	// 			}
-	// 			if(this.isValidPosition(i+1,j-1) && this.containsPawn(i+1,j-1) == false && !this.visited[i+1][j-1])
-	// 			{
-	// 				newAdj8Moves.push([i+1, j-1]);
-	// 			}
-	// 			if(this.isValidPosition(i,j-1) && this.containsPawn(i,j-1) == false && !this.visited[i][j-1])
-	// 			{
-	// 				newAdj8Moves.push([i, j-1]);
-	// 			}
-	// 		}
-	// 	}
-	// 	else
-	// 	{
-	// 		if(this.inCampBlack(i,j))
-	// 		{
-	// 			if(this.isValidPosition(i-1,j-1) && this.containsPawn(i-1,j-1) == false && !this.visited[i-1][j-1] && this.inCampBlack(i-1,j-1))
-	// 			{
-	// 				newAdj8Moves.push([i-1, j-1]);
-	// 			}
-	// 			if(this.isValidPosition(i-1,j) && this.containsPawn(i-1,j) == false && !this.visited[i-1][j] && this.inCampBlack(i-1,j))
-	// 			{
-	// 				newAdj8Moves.push([i-1,j]);
-	// 			}
-	// 			if(this.isValidPosition(i-1,j+1) && this.containsPawn(i-1,j+1) == false && !this.visited[i-1][j+1] && this.inCampBlack(i-1,j+1))
-	// 			{
-	// 				newAdj8Moves.push([i-1, j+1]);
-	// 			}
-	// 			if(this.isValidPosition(i,j+1) && this.containsPawn(i,j+1) == false && !this.visited[i][j+1] && this.inCampBlack(i,j+1))
-	// 			{
-	// 				newAdj8Moves.push([i, j+1]);
-	// 			}
-	// 			if(this.isValidPosition(i+1,j+1) && this.containsPawn(i+1,j+1) == false && !this.visited[i+1][j+1] && this.inCampBlack(i+1,j+1))
-	// 			{
-	// 				newAdj8Moves.push([i+1, j+1]);
-	// 			}
-	// 			if(this.isValidPosition(i+1,j) && this.containsPawn(i+1,j) == false && !this.visited[i+1][j] && this.inCampBlack(i+1,j))
-	// 			{
-	// 				newAdj8Moves.push([i+1, j]);
-	// 			}
-	// 			if(this.isValidPosition(i+1,j-1) && this.containsPawn(i+1,j-1) == false && !this.visited[i+1][j-1] && this.inCampBlack(i+1,j-1))
-	// 			{
-	// 				newAdj8Moves.push([i+1, j-1]);
-	// 			}
-	// 			if(this.isValidPosition(i,j-1) && this.containsPawn(i,j-1) == false && !this.visited[i][j-1] && this.inCampBlack(i,j-1))
-	// 			{
-	// 				newAdj8Moves.push([i,j-1]);
-	// 			}
-			
-	// 		}
-	// 		else
-	// 		{
-	// 			if(this.isValidPosition(i-1,j-1) && this.containsPawn(i-1,j-1) == false && !this.visited[i-1][j-1])
-	// 			{
-	// 				newAdj8Moves.push([i-1, j-1]);
-	// 			}
-	// 			if(this.isValidPosition(i-1,j) && this.containsPawn(i-1,j) == false && !this.visited[i-1][j])
-	// 			{
-	// 				newAdj8Moves.push([i-1, j]);
-	// 			}
-	// 			if(this.isValidPosition(i-1,j+1) && this.containsPawn(i-1,j+1) == false && !this.visited[i-1][j+1])
-	// 			{
-	// 				newAdj8Moves.push([i-1, j+1]);
-	// 			}
-	// 			if(this.isValidPosition(i,j+1) && this.containsPawn(i,j+1) == false && !this.visited[i][j+1])
-	// 			{
-	// 				newAdj8Moves.push([i, j+1]);
-	// 			}
-	// 			if(this.isValidPosition(i+1,j+1) && this.containsPawn(i+1,j+1) == false && !this.visited[i+1][j+1])
-	// 			{
-	// 				newAdj8Moves.push([i+1, j+1]);
-	// 			}
-	// 			if(this.isValidPosition(i+1,j) && this.containsPawn(i+1,j) == false && !this.visited[i+1][j])
-	// 			{
-	// 				newAdj8Moves.push([i+1, j]);
-	// 			}
-	// 			if(this.isValidPosition(i+1,j-1) && this.containsPawn(i+1,j-1) == false && !this.visited[i+1][j-1])
-	// 			{
-	// 				newAdj8Moves.push([i+1, j-1]);
-	// 			}
-	// 			if(this.isValidPosition(i,j-1) && this.containsPawn(i,j-1) == false && !this.visited[i][j-1])
-	// 			{
-	// 				newAdj8Moves.push([i, j-1]);
-	// 			}
-	// 		}
-	// 	}
-	// 	return newAdj8Moves;
-
-	// }
 
 	public get8AdjMoveIndices(i, j) {
 		let newAdj8Moves = new Array();
@@ -1069,253 +1002,6 @@ export class GameState {
 			}
 		return newAdj8Moves;
 	}
-
-	// public getJumpsIndices(x: number, y: number) {
-	// 	let newJumpMoves = new Array();
-		
-	// 	this.jumpQueue.push(new Tile(x, y, ""));
-	// 	this.visited[x][y] = true;
-	// 	console.log("Before while loop")
-	// 	while(this.jumpQueue.length != 0)
-	// 	{
-	// 		console.log("Entered beginning of while loop")
-	// 		let t = this.jumpQueue.shift();
-	// 		let i = t.getX(), j = t.getY();
-	// 		console.log("i, j, visited:", i, j,  this.visited[i][j])
-	// 		//----------------------trying camp oppnt----
-	// 		if(this.player == "BLACK")
-	// 		{
-	// 			if(this.inCampWhite(x,y))
-	// 			{
-	// 				if(this.isValidPosition(i-2,j-2) && this.containsPawn(i-1,j-1) && !this.visited[i-2][j-2])
-	// 				{
-	// 					if(this.inCampWhite(i-2,j-2))
-	// 						newJumpMoves.push([i-2, j-2]); 
-	// 					this.jumpQueue.push(new Tile(i-2,j-2,t.getPreviousMoves()+ "J " + i + "," + j + " " + (i-2) + "," + (j-2) + "\n"));
-	// 					this.visited[i-2][j-2] = true;
-	// 				}
-	// 				if(this.isValidPosition(i-2,j) && this.containsPawn(i-1,j) && !this.visited[i-2][j])
-	// 				{
-	// 					if(this.inCampWhite(i-2,j))
-	// 						newJumpMoves.push([i-2, j]);
-	// 					this.jumpQueue.push(new Tile(i-2,j,t.getPreviousMoves()+"J " + i + "," + j + " " + (i-2) + "," + (j) + "\n"));
-	// 					this.visited[i-2][j] = true;
-	// 				}
-	// 				if(this.isValidPosition(i-2,j+2) && this.containsPawn(i-1,j+1) && !this.visited[i-2][j+2])
-	// 				{
-	// 					if(this.inCampWhite(i-2,j+2))
-	// 						newJumpMoves.push([i-2, j+2]);
-	// 					this.jumpQueue.push(new Tile(i-2,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i-2) + "," + (j+2) + "\n"));
-	// 					this.visited[i-2][j+2] = true;
-	// 				}
-	// 				if(this.isValidPosition(i,j+2) && this.containsPawn(i,j+1) && !this.visited[i][j+2])
-	// 				{
-	// 					if(this.inCampWhite(i,j+2))
-	// 						newJumpMoves.push([i, j+2]);
-	// 					this.jumpQueue.push(new Tile(i,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i) + "," + (j+2) + "\n"));
-	// 					this.visited[i][j+2] = true;
-	// 				}
-	// 				if(this.isValidPosition(i+2,j+2) && this.containsPawn(i+1,j+1) && !this.visited[i+2][j+2])
-	// 				{
-	// 					if(this.inCampWhite(i+2,j+2))
-	// 						newJumpMoves.push([i+2, j+2]);
-	// 					this.jumpQueue.push(new Tile(i+2,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j+2) + "\n"));
-	// 					this.visited[i+2][j+2] = true;
-	// 				}
-	// 				if(this.isValidPosition(i+2,j) && this.containsPawn(i+1,j) && !this.visited[i+2][j])
-	// 				{
-	// 					if(this.inCampWhite(i+2,j))
-	// 						newJumpMoves.push([i+2, j]);
-	// 					this.jumpQueue.push(new Tile(i+2,j,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j) + "\n"));
-	// 					this.visited[i+2][j] = true;
-	// 				}
-	// 				if(this.isValidPosition(i+2,j-2) && this.containsPawn(i+1,j-1) && !this.visited[i+2][j-2])
-	// 				{
-	// 					if(this.inCampWhite(i+2,j-2))
-	// 						newJumpMoves.push([i+2, j-2]);
-	// 					this.jumpQueue.push(new Tile(i+2,j-2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j-2) + "\n"));
-	// 					this.visited[i+2][j-2] = true;
-	// 				}
-	// 				if(this.isValidPosition(i,j-2) && this.containsPawn(i, j-1) && !this.visited[i][j-2])
-	// 				{
-	// 					if(this.inCampWhite(i,j-2))
-	// 						newJumpMoves.push([i, j-2]);
-	// 					this.jumpQueue.push(new Tile(i,j-2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i) + "," + (j-2) + "\n"));
-	// 					this.visited[i][j-2] = true;
-	// 				}
-	// 			}
-	// 			else
-	// 			{
-	// 				if(this.isValidPosition(i-2,j-2) && this.containsPawn(i-1,j-1) && !this.visited[i-2][j-2])
-	// 				{
-	// 					newJumpMoves.push([i-2, j-2]); 
-	// 					this.jumpQueue.push(new Tile(i-2,j-2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i-2) + "," + (j-2) + "\n"));
-	// 					this.visited[i-2][j-2] = true;
-	// 				}
-	// 				if(this.isValidPosition(i-2,j) && this.containsPawn(i-1,j) && !this.visited[i-2][j])
-	// 				{
-	// 					newJumpMoves.push([i-2, j]);
-	// 					this.jumpQueue.push(new Tile(i-2,j,t.getPreviousMoves()+"J " + i + "," + j + " " + (i-2) + "," + (j) + "\n"));
-	// 					this.visited[i-2][j] = true;
-	// 				}
-	// 				if(this.isValidPosition(i-2,j+2) && this.containsPawn(i-1,j+1) && !this.visited[i-2][j+2])
-	// 				{
-	// 					newJumpMoves.push([i-2, j+2]);
-	// 					this.jumpQueue.push(new Tile(i-2,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i-2) + "," + (j+2) + "\n"));
-	// 					this.visited[i-2][j+2] = true;
-	// 				}
-	// 				if(this.isValidPosition(i,j+2) && this.containsPawn(i,j+1) && !this.visited[i][j+2])
-	// 				{
-	// 					newJumpMoves.push([i, j+2]);
-	// 					this.jumpQueue.push(new Tile(i,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i) + "," + (j+2) + "\n"));
-	// 					this.visited[i][j+2] = true;
-	// 				}
-	// 				if(this.isValidPosition(i+2,j+2) && this.containsPawn(i+1,j+1) && !this.visited[i+2][j+2])
-	// 				{
-	// 					newJumpMoves.push([i+2, j+2]);
-	// 					this.jumpQueue.push(new Tile(i+2,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j+2) + "\n"));
-	// 					this.visited[i+2][j+2] = true;
-	// 				}
-	// 				if(this.isValidPosition(i+2,j) && this.containsPawn(i+1,j) && !this.visited[i+2][j])
-	// 				{
-	// 					newJumpMoves.push([i+2, j]);
-	// 					this.jumpQueue.push(new Tile(i+2,j,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j) + "\n"));
-	// 					this.visited[i+2][j] = true;
-	// 				}
-	// 				if(this.isValidPosition(i+2,j-2) && this.containsPawn(i+1,j-1) && !this.visited[i+2][j-2])
-	// 				{
-	// 					newJumpMoves.push([i+2, j-2]);
-	// 					this.jumpQueue.push(new Tile(i+2,j-2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j-2) + "\n"));
-	// 					this.visited[i+2][j-2] = true;
-	// 				}
-	// 				if(this.isValidPosition(i,j-2) && this.containsPawn(i, j-1) && !this.visited[i][j-2])
-	// 				{
-	// 					newJumpMoves.push([i, j-2]);
-	// 					this.jumpQueue.push(new Tile(i,j-2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i) + "," + (j-2) + "\n"));
-	// 					this.visited[i][j-2] = true;
-	// 				}
-	// 			} 
-	// 		}
-	// 		else
-	// 		{
-	// 			if(this.inCampBlack(x,y))
-	// 			{
-	// 				if(this.isValidPosition(i-2,j-2) && this.containsPawn(i-1,j-1) && !this.visited[i-2][j-2])
-	// 				{
-	// 					if(this.inCampBlack(i-2,j-2))
-	// 						newJumpMoves.push([i-2, j-2]); 
-	// 					this.jumpQueue.push(new Tile(i-2,j-2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i-2) + "," + (j-2) + "\n"));
-	// 					this.visited[i-2][j-2] = true;
-						
-	// 				}
-	// 				if(this.isValidPosition(i-2,j) && this.containsPawn(i-1,j) && !this.visited[i-2][j])
-	// 				{
-	// 					if(this.inCampBlack(i-2,j))
-	// 						newJumpMoves.push([i-2, j]);
-	// 					this.jumpQueue.push(new Tile(i-2,j,t.getPreviousMoves()+"J " + i + "," + j + " " + (i-2) + "," + (j) + "\n"));
-	// 					this.visited[i-2][j] = true;
-	// 				}
-	// 				if(this.isValidPosition(i-2,j+2) && this.containsPawn(i-1,j+1) && !this.visited[i-2][j+2])
-	// 				{
-	// 					if(this.inCampBlack(i-2,j+2))
-	// 						newJumpMoves.push([i-2, j+2]);
-	// 					this.jumpQueue.push(new Tile(i-2,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i-2) + "," + (j+2) + "\n"));
-	// 					this.visited[i-2][j+2] = true;
-	// 				}
-	// 				if(this.isValidPosition(i,j+2) && this.containsPawn(i,j+1) && !this.visited[i][j+2])
-	// 				{
-	// 					if(this.inCampBlack(i,j+2))
-	// 						newJumpMoves.push([i, j+2]);
-	// 					this.jumpQueue.push(new Tile(i,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i) + "," + (j+2) + "\n"));
-	// 					this.visited[i][j+2] = true;
-	// 				}
-	// 				if(this.isValidPosition(i+2,j+2) && this.containsPawn(i+1,j+1) && !this.visited[i+2][j+2])
-	// 				{
-	// 					if(this.inCampBlack(i+2,j+2))
-	// 						newJumpMoves.push([i+2, j+2]);
-	// 					this.jumpQueue.push(new Tile(i+2,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j+2) + "\n"));
-	// 					this.visited[i+2][j+2] = true;
-	// 				}
-	// 				if(this.isValidPosition(i+2,j) && this.containsPawn(i+1,j) && !this.visited[i+2][j])
-	// 				{
-	// 					if(this.inCampBlack(i+2,j))
-	// 						newJumpMoves.push([i+2, j]);
-	// 					this.jumpQueue.push(new Tile(i+2,j,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j) + "\n"));
-	// 					this.visited[i+2][j] = true;
-	// 				}
-	// 				if(this.isValidPosition(i+2,j-2) && this.containsPawn(i+1,j-1) && !this.visited[i+2][j-2])
-	// 				{
-	// 					if(this.inCampBlack(i+2,j-2))
-	// 						newJumpMoves.push([i+2, j-2]);
-	// 					this.jumpQueue.push(new Tile(i+2,j-2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j-2) + "\n"));
-	// 					this.visited[i+2][j-2] = true;
-	// 				}
-	// 				if(this.isValidPosition(i,j-2) && this.containsPawn(i, j-1) && !this.visited[i][j-2])
-	// 				{
-	// 					if(this.inCampBlack(i,j-2))
-	// 						newJumpMoves.push([i, j-2]);
-	// 					this.jumpQueue.push(new Tile(i,j-2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i) + "," + (j-2) + "\n"));
-	// 					this.visited[i][j-2] = true;
-	// 				}
-	// 			}
-	// 			else
-	// 			{
-	// 				if(this.isValidPosition(i-2,j-2) && this.containsPawn(i-1,j-1) && !this.visited[i-2][j-2])
-	// 				{
-	// 					newJumpMoves.push([i-2, j-2]); 
-	// 					this.jumpQueue.push(new Tile(i-2,j-2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i-2) + "," + (j-2) + "\n"));
-	// 					this.visited[i-2][j-2] = true;
-	// 				}
-	// 				if(this.isValidPosition(i-2,j) && this.containsPawn(i-1,j) && !this.visited[i-2][j])
-	// 				{
-	// 					newJumpMoves.push([i-2, j]);
-	// 					this.jumpQueue.push(new Tile(i-2,j,t.getPreviousMoves()+"J " + i + "," + j + " " + (i-2) + "," + (j) + "\n"));
-	// 					this.visited[i-2][j] = true;
-	// 				}
-	// 				if(this.isValidPosition(i-2,j+2) && this.containsPawn(i-1,j+1) && !this.visited[i-2][j+2])
-	// 				{
-	// 					newJumpMoves.push([i-2, j+2]);
-	// 					this.jumpQueue.push(new Tile(i-2,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i-2) + "," + (j+2) + "\n"));
-	// 					this.visited[i-2][j+2] = true;
-	// 				}
-	// 				if(this.isValidPosition(i,j+2) && this.containsPawn(i,j+1) && !this.visited[i][j+2])
-	// 				{
-	// 					newJumpMoves.push([i, j+2]);
-	// 					this.jumpQueue.push(new Tile(i,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i) + "," + (j+2) + "\n"));
-	// 					this.visited[i][j+2] = true;
-	// 				}
-	// 				if(this.isValidPosition(i+2,j+2) && this.containsPawn(i+1,j+1) && !this.visited[i+2][j+2])
-	// 				{
-	// 					newJumpMoves.push([i+2, j+2]);
-	// 					this.jumpQueue.push(new Tile(i+2,j+2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j+2) + "\n"));
-	// 					this.visited[i+2][j+2] = true;
-	// 				}
-	// 				if(this.isValidPosition(i+2,j) && this.containsPawn(i+1,j) && !this.visited[i+2][j])
-	// 				{
-	// 					newJumpMoves.push([i+2, j]);
-	// 					this.jumpQueue.push(new Tile(i+2,j,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j) + "\n"));
-	// 					this.visited[i+2][j] = true;
-	// 				}
-	// 				if(this.isValidPosition(i+2,j-2) && this.containsPawn(i+1,j-1) && !this.visited[i+2][j-2])
-	// 				{
-	// 					newJumpMoves.push([i+2, j-2]);
-	// 					this.jumpQueue.push(new Tile(i+2,j-2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i+2) + "," + (j-2) + "\n"));
-	// 					this.visited[i+2][j-2] = true;
-	// 				}
-	// 				if(this.isValidPosition(i,j-2) && this.containsPawn(i, j-1) && !this.visited[i][j-2])
-	// 				{
-	// 					newJumpMoves.push([i, j-2]);
-	// 					this.jumpQueue.push(new Tile(i,j-2,t.getPreviousMoves()+"J " + i + "," + j + " " + (i) + "," + (j-2) + "\n"));
-	// 					this.visited[i][j-2] = true;
-	// 				}
-	// 			}
-	// 		}
-	// 		//----------------------
-	// 	}
-	// 	console.log("Exited while loop")
-	// 	return newJumpMoves;
-	// }
-
 
 	public getJumpsIndices(x, y): GameState[]
 	{
