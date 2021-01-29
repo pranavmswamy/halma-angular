@@ -906,6 +906,56 @@ export class GameState {
 
 	public centroidOfEmptyInWhiteOppntCamp() {
 		// start here.
+		let sum_x = 0
+		let sum_y = 0
+
+		let count_x = 0
+		let count_y = 0
+
+		for(let i = 0; i < 2 ; i++)
+			for(let j = 0; j < 5 ; j++)
+				if(this.board[i][j] == '.') {
+					sum_x += i
+					sum_y += j
+
+					count_x += 1
+					count_y += 1
+				}	
+
+		for( let j=0; j<4;j++)
+			if(this.board[2][j] == '.') {
+				sum_x += 2
+				sum_y += j
+
+				count_x += 1
+				count_y += 1
+			}
+
+		for( let j=0; j<3;j++)
+			if(this.board[3][j] == '.') {
+				sum_x += 3
+				sum_y += j
+
+				count_x += 1
+				count_y += 1
+
+			}	
+
+		for(let j=0; j<2; j++)
+			if(this.board[4][j] == '.') {
+				sum_x += 4
+				sum_y += j
+
+				count_x += 1
+				count_y += 1
+			}
+		
+		if(count_x == 0 || count_y == 0) {
+			return [0, 0]
+		} 
+
+		return [sum_x / count_x, sum_y / count_y]
+		
 	}
 
 	// Note - this works only for white playing, where black is played by human.
