@@ -1,6 +1,7 @@
 # Halma AI
 
 Project under development. URL - https://pranavmswamy.github.io/halma/
+Java Repository - https://github.com/pranavmswamy/halma
 
 (From [Wikipedia](https://en.wikipedia.org/wiki/Halma)) Halma is a strategy board game invented in 1883 or 1884 by George Howard Monks, a US thoracic surgeon at Harvard Medical School. His inspiration was the English game Hoppity which was devised in 1854. The gameboard is checkered and divided into 16×16 squares. Pieces may be small checkers or counters, or wooden or plastic cones or men resembling small chess pawns. Piece colors are typically black and white for two-player games, and various colors or other distinction in games for four players. The game is played by two or four players seated at opposing corners of the board. The game is won by being first to transfer all of one's pieces from one's own camp into the camp in the opposing corner. For four-player games played in teams, the winner is the first team to race both sets of pieces into opposing camps. On each turn, a player either moves a single piece to an adjacent open square, or jumps over one or more pieces in sequence.
 
