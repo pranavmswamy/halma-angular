@@ -34,8 +34,8 @@ The Alpha-beta pruning to a standard minimax algorithm returns the same move as 
 
 
 ## Screenshots
-![Image of Halma](https://github.com/pranavmswamy/halma-angular/blob/master/screenshots/pic1.png)
-![Image of Halma](https://github.com/pranavmswamy/halma-angular/blob/master/screenshots/pic2.png)
+![Image of Halma](https://github.com/pranavmswamy/halma-angular/blob/main/screenshots/pic1.png)
+![Image of Halma](https://github.com/pranavmswamy/halma-angular/blob/main/screenshots/pic2.png)
 
 ## Test Results
 - Beat 82% of other 700+ Halma AI agents during a competition held at USC in Fall 2019 in the Foundations of Artificial Intelligence class. (CSCI-561)
