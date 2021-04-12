@@ -261,7 +261,7 @@ export class GameState {
 		return false;
 	}
 	
-	public terminalTest(): boolean {
+	/*public terminalTest(): boolean {
 		let terminalTest: boolean = false;
 		let topLeftBlacks = 0, topLeftWhites = 0, bottomRightBlacks = 0, bottomRightWhites = 0;
 		
@@ -369,7 +369,104 @@ export class GameState {
 		}		
 		return terminalTest;
 		//end bottomright
+	}*/
+
+	/*
+	Terminal Test for AI vs Human game.
+	*/
+	public terminalTest(): boolean {
+		let terminalTest: boolean = false;
+		let topLeftBlacks = 0, topLeftWhites = 0, bottomRightBlacks = 0, bottomRightWhites = 0;
+		
+		//calculatetopleft
+		for(let i = 0; i < 2 ; i++)
+		{
+			for(let j = 0; j < 5 ; j++)
+			{
+					if(this.board[i][j] == ".")
+						terminalTest = false;
+					else if(this.board[i][j] == "W")
+						topLeftWhites++;
+					else
+						topLeftBlacks++;
+			}
+		}
+		for(let j=0; j<4;j++)
+			if(this.board[2][j] == ".")
+				terminalTest = false;
+			else if(this.board[2][j] == "W")
+				topLeftWhites++;
+			else
+				topLeftBlacks++;
+		
+		for(let j=0; j<3;j++)
+			if(this.board[3][j] == ".")
+				terminalTest = false;
+			else if(this.board[3][j] == "W")
+				topLeftWhites++;
+			else
+				topLeftBlacks++;
+		
+		for(let j=0; j<2;j++)
+			if(this.board[4][j] == ".")
+				terminalTest = false;
+			else if(this.board[4][j] == "W")
+				topLeftWhites++;
+			else
+				topLeftBlacks++;
+		//endcalctopleft
+		
+		//calculatebottomright
+		for(let i = 14; i < 16 ; i++) {
+			for(let j = 11; j < 16 ; j++) {
+					if(this.board[i][j] == ".")
+						terminalTest = false;
+					else if(this.board[i][j] == "W")
+						bottomRightWhites++;
+					else
+						bottomRightBlacks++;
+			}
+		}
+		for(let j=12; j<16;j++)
+			if(this.board[13][j] == ".")
+				terminalTest = false;
+			else if(this.board[13][j] == "W")
+				bottomRightWhites++;
+			else
+				bottomRightBlacks++;
+		
+		for(let j=13; j<16;j++)
+			if(this.board[12][j] == ".")
+				terminalTest = false;
+			else if(this.board[12][j] == "W")
+				bottomRightWhites++;
+			else
+				bottomRightBlacks++;
+		
+		for(let j=14; j<16;j++)
+			if(this.board[11][j] == ".")
+				terminalTest = false;
+			else if(this.board[11][j] == "W")
+				bottomRightWhites++;
+			else
+				bottomRightBlacks++;
+		//endcalctopright
+		
+		if(topLeftWhites == 19)
+		{
+			this.utilityValue = 1000000;
+			this.alphaBetaValue = 1000000;
+			return true;
+		}
+		else if(bottomRightBlacks == 19)
+		{
+			this.utilityValue = -1000000;
+			this.alphaBetaValue = -1000000;
+		}		
+		return terminalTest;
+		//end bottomright
 	}
+
 
 	public setPlayer(player) {
 		this.player = player;
@@ -983,9 +1080,11 @@ export class GameState {
 			}	
 
 			// calculate centroid
-			let centroid = this.centroidOfEmptyInWhiteOppntCamp();
-			let cx = centroid[0]
-			let cy = centroid[1]
+			//let centroid = this.centroidOfEmptyInWhiteOppntCamp();
+			// let cx = centroid[0]
+			// let cy = centroid[1]
+			let cx = 0
+			let cy = 0
 
 			for(let p of this.white)
 				{
@@ -1036,14 +1135,23 @@ export class GameState {
 							// add only if it is not in opponent home camp, OR if it is, and the next position is also in oppnt home camp.
 							if(!this.inCampWhite(i, j) || (this.inCampWhite(i, j) && this.inCampWhite(nextI, nextJ))) {
 								//let previousMoves = "E" + i + "," + j + " " + nextI + "," + nextJ + "\n";
-								newAdj8Moves.push([nextI, nextJ])
+								if(!this.inCampBlack(i, j) && this.inCampBlack(nextI, nextJ)) {
+									// pass
+								} else {
+									newAdj8Moves.push([nextI, nextJ])
+								}
 							}
 						}
 						else {
 							// add only if it is not in opponent home camp, OR if it is, and the next position is also in oppnt home camp.
 							if(!this.inCampBlack(i, j) || (this.inCampBlack(i, j) && this.inCampBlack(nextI, nextJ))) {
 								//let previousMoves = "E" + i + "," + j + " " + nextI + "," + nextJ + "\n";
-								newAdj8Moves.push([nextI, nextJ])
+								if(!this.inCampWhite(i,j) && this.inCampWhite(nextI, nextJ)) {
+									// pass
+								}
+								else {
+									newAdj8Moves.push([nextI, nextJ])
+								}
 							}
 						}
 						

@@ -33,6 +33,7 @@ export class MinimaxService {
   generateValidMoves(row: number, col: number) {
     let validMoves = new Array();
 
+    this.currentGamestate.markAllVisitedFalse()
     let adj8Moves = this.currentGamestate.get8AdjMoveIndices(row, col)
     let jumpMoves = this._getJumpIndices(row, col)
     validMoves = validMoves.concat(adj8Moves);

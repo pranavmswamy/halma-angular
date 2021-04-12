@@ -5,15 +5,25 @@
 button.tile-button {
     border: none;
     outline: none;
+    width: 100%;
     
 }
 
+.button-dim {
+    height: 50px;
+    width: 50px;
+}
+
+.home-camp-bg {
+    background-color: #C6B59B
+}
+
 .normal-bg {
-    background-color:#e0ca65;
+    background-color:#DCC289
 }
 
 .highlighted {
-    background-color:#cf7124;
+    background-color:#788D7A
 }
 
 .black-pawn {
@@ -24,4 +34,9 @@ button.tile-button {
 .white-pawn {
     border-radius: 50%;
     background-color: white;
+}
+
+.no-pawn {
+    border-radius: 50%;
+    background-color:transparent;
 }

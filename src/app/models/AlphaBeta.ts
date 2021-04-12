@@ -92,6 +92,8 @@ export class AlphaBeta {
 		for(let g of this.firstLevel)
 		{
 			//console.log("uv = " + g.getUtilityValue() + " ab value = " + g.getAlphaBetaValue() + "prevMoves= " + g.getPreviousMoves());
+			console.log("one of many options")
+			console.log(g.getBoard())
 
 			if(abReturnedValue == g.getAlphaBetaValue() && g.terminalTest() == true)
 			{
