@@ -7,7 +7,7 @@ export class AlphaBeta {
 	
 	public maxValue(depth: number, gameState: GameState, alpha: number, beta: number): number
 	{
-		
+		//console.log("Entering maxValue")
 		if(gameState.terminalTest() == true)
 		{
 			return gameState.getUtilityValue();
@@ -23,11 +23,13 @@ export class AlphaBeta {
 		let v = Number.NEGATIVE_INFINITY //check
 
 		let kLevel: GameState[] = gameState.calculateActions();
+		//console.log("Finished calculating actions in maxvalue")
 		if(this.depth == depth)
 			this.firstLevel = kLevel;
 		
 		for(let state of kLevel)
 		{
+			//console.log("Entered for loop in maxvalue")
 			v = Math.max(v, this.minValue(depth-1, state, alpha, beta));
 			if(v>=beta) 
 			{
@@ -41,12 +43,12 @@ export class AlphaBeta {
 		gameState.setAlphaBetaValue(v);
 		if(this.depth == depth)
 			this.firstLevel = kLevel;
-			
 		return v;
 	}
 	
 	public minValue(depth: number, gameState: GameState, alpha: number, beta: number): number
 	{
+		console.log("Entering minvalue")
 		if(gameState.terminalTest() == true)
 		{
 			return gameState.getUtilityValue();
@@ -77,9 +79,10 @@ export class AlphaBeta {
 	public runAlphaBeta(initialState: GameState, depth: number): GameState
 	{
 		this.depth = depth; 
+		//console.log("Entering alpha beta")
 		let abReturnedValue =  this.maxValue(depth, initialState, Number.NEGATIVE_INFINITY, Number.POSITIVE_INFINITY);
 		//System.out.println(" ab returned = " + abReturnedValue);
-		
+		//console.log("Finished alpha beta")
 		let nextGameState: GameState = null, gameOverState: GameState = null;
 		let returnableGameState = null;
         
@@ -88,7 +91,9 @@ export class AlphaBeta {
 		
 		for(let g of this.firstLevel)
 		{
-			console.log("uv = " + g.getUtilityValue() + " ab value = " + g.getAlphaBetaValue() + "prevMoves= " + g.getPreviousMoves());
+			//console.log("uv = " + g.getUtilityValue() + " ab value = " + g.getAlphaBetaValue() + "prevMoves= " + g.getPreviousMoves());
+			console.log("one of many options")
+			console.log(g.getBoard())
 
 			if(abReturnedValue == g.getAlphaBetaValue() && g.terminalTest() == true)
 			{

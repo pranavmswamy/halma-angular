@@ -16,6 +16,8 @@ export class PlayPageComponent implements OnInit {
   
   board: string[][];
   highlighted: boolean[][]
+  home_camp: boolean[][]
+  clicked: boolean[][]
   firstClick = true;
   candidatePawnPosition = null;
 
@@ -38,6 +40,56 @@ export class PlayPageComponent implements OnInit {
         this.highlighted[i][j] = false;
       }
     }
+
+    this.clicked = []
+    for(let i=0; i<16; i++) {
+      this.clicked[i] = [];
+      for(let j=0; j<16; j++) {
+        this.clicked[i][j] = false;
+      }
+    }
+
+    this.home_camp = []
+    for(let i=0; i<16; i++) {
+      this.home_camp[i] = [];
+      for(let j=0; j<16; j++) {
+        this.home_camp[i][j] = false;
+      }
+    }
+
+    for(let i = 0; i < 2 ; i++)
+		{
+			for(let j = 0; j < 5 ; j++)
+			{
+					this.home_camp[i][j] = true
+			}
+		}
+		for(let j=0; j<4;j++)
+			this.home_camp[2][j] = true
+		
+		for(let j=0; j<3;j++)
+			this.home_camp[3][j] = true
+		
+		for(let j=0; j<2;j++)
+			this.home_camp[4][j] = true
+		//endcalctopleft
+		
+		//calculatebottomright
+		for(let i = 14; i < 16 ; i++) {
+			for(let j = 11; j < 16 ; j++) {
+					this.home_camp[i][j] = true
+			}
+		}
+		for(let j=12; j<16;j++)
+			if(this.board[13][j] == ".")
+				this.home_camp[13][j] = true
+		
+		for(let j=13; j<16;j++)
+			this.home_camp[12][j] = true
+		
+		for(let j=14; j<16;j++)
+			this.home_camp[11][j] = true
+		//endcalctopright
 
 
    }
@@ -168,10 +220,8 @@ export class PlayPageComponent implements OnInit {
     return nextGameState;
   }
 
-  buttonOnClick(i:  number, j: number) {
-
-    if(this.firstClick == true) {
-
+  buttonOnClick(i: number, j: number) {
+    if(this.board[i][j] == 'B') {
       // clears highlighted cells first, if any.
       this.clearHighlightedCells();
 
@@ -180,56 +230,135 @@ export class PlayPageComponent implements OnInit {
       this.candidatePawnPosition = [i,j]
       
       // first click - validate and highlight options.
-      if(this.board[i][j] == 'B' || this.board[i][j] == 'W') {
-        let validMoves = this.minimaxService.generateValidMoves(i, j);
-        validMoves.forEach(position => {
-          this.highlighted[position[0]][position[1]] = true;
-        });
+      let validMoves = this.minimaxService.generateValidMoves(i, j);
+      console.log("len valid moves:", validMoves.length)
+      validMoves.forEach(position => {
+        console.log(position)
+        this.highlighted[position[0]][position[1]] = true;
+      });
+    }
+    else if(this.board[i][j] == '.' && this.highlighted[i][j]) {
+      // move pawn to that place
+      this.board[i][j] = this.board[this.candidatePawnPosition[0]][this.candidatePawnPosition[1]];
+      this.board[this.candidatePawnPosition[0]][this.candidatePawnPosition[1]] = '.';
+      this.clearHighlightedCells();
+
+      // update game state and send to minimax service
+      let nextGameState = this.getNextGameState();
+      nextGameState.setPlayer("WHITE");
+      this.minimaxService.updateGameState(nextGameState);
+      //check if gamestate got updated.
+      //console.log(this.board)
+      //console.log(this.minimaxService.currentGamestate.getBoard())
+
+      // make AI play
+      console.log("Handing over to AI")
+      let AIreturnedGamestate;
+      if(this.minimaxService.currentGamestate.countWhiteInOpponentCamp() > 15) {
+        AIreturnedGamestate = new AlphaBeta().runAlphaBeta(this.minimaxService.currentGamestate, 4);
       }
       else {
-        // do nothing since user clicked on empty square.
+        AIreturnedGamestate = new AlphaBeta().runAlphaBeta(this.minimaxService.currentGamestate, 2);
       }
-      this.firstClick = false;
-    }
-    else {
-      // second click - validate and move pawn, and then update gamestate in service.
-      if(this.highlighted[i][j] == true) {
-        // move pawn to that place
-        this.board[i][j] = this.board[this.candidatePawnPosition[0]][this.candidatePawnPosition[1]];
-        this.board[this.candidatePawnPosition[0]][this.candidatePawnPosition[1]] = '.';
-        this.clearHighlightedCells();
+      console.log("AI returned: ", AIreturnedGamestate.getBoard())
 
-        // update game state and send to minimax service
-        let nextGameState = this.getNextGameState();
-        nextGameState.setPlayer("WHITE");
-        this.minimaxService.updateGameState(nextGameState);
-        //check if gamestate got updated.
-        //console.log(this.board)
-        //console.log(this.minimaxService.currentGamestate.getBoard())
+      // update gamestate again and display.
+      this.minimaxService.updateGameState(AIreturnedGamestate);
+      this.minimaxService.currentGamestate.setPlayer("BLACK");
+      this.updateBoard(this.minimaxService.currentGamestate.getBoard());
 
+      //this.firstClick = true;
+      this.candidatePawnPosition = null;
 
-        // make AI play
-        console.log("Handing over to AI")
-        let AIreturnedGamestate = new AlphaBeta().runAlphaBeta(this.minimaxService.currentGamestate, 3);
-        console.log("AI returned: ", AIreturnedGamestate.getBoard())
-
-        // update gamestate again and display.
-        this.minimaxService.updateGameState(AIreturnedGamestate);
-        this.minimaxService.currentGamestate.setPlayer("BLACK");
-        this.updateBoard(this.minimaxService.currentGamestate.getBoard());
-
-        this.firstClick = true;
-        this.candidatePawnPosition = null;
-      }
-      else if(this.board[i][j] != '.') {
-        this.firstClick = true;
-        this.buttonOnClick(i, j);
-      }
-      else {
-        // clicked on empty.
+      // GAME OVER STATE
+      if(this.minimaxService.currentGamestate.countWhiteInOpponentCamp() == 19) {
+        // popup modal on who won.
       }
     }
+    else if((this.board[i][j] == '.' && !this.highlighted[i][j]) || this.board[i][j] =='W') {
+      this.clearHighlightedCells()
+    }
+
+
+
+    // ----------------
     
+    
+
   }
 
+  // buttonOnClick(i:  number, j: number) {
+
+  //   if(this.firstClick == true) {
+
+  //     // clears highlighted cells first, if any.
+  //     this.clearHighlightedCells();
+
+  //     // cache to store pawn to move next if chosen.
+  //     this.candidatePawnPosition = null;
+  //     this.candidatePawnPosition = [i,j]
+      
+  //     // first click - validate and highlight options.
+  //     if(this.board[i][j] == 'B' || this.board[i][j] == 'W') {
+  //       let validMoves = this.minimaxService.generateValidMoves(i, j);
+  //       validMoves.forEach(position => {
+  //         this.highlighted[position[0]][position[1]] = true;
+  //       });
+  //     }
+  //     else {
+  //       // do nothing since user clicked on empty square.
+  //     }
+  //     this.firstClick = false;
+  //   }
+  //   else {
+  //     // second click - validate and move pawn, and then update gamestate in service.
+  //     if(this.highlighted[i][j] == true) {
+  //       // move pawn to that place
+  //       this.board[i][j] = this.board[this.candidatePawnPosition[0]][this.candidatePawnPosition[1]];
+  //       this.board[this.candidatePawnPosition[0]][this.candidatePawnPosition[1]] = '.';
+  //       this.clearHighlightedCells();
+
+  //       // update game state and send to minimax service
+  //       let nextGameState = this.getNextGameState();
+  //       nextGameState.setPlayer("WHITE");
+  //       this.minimaxService.updateGameState(nextGameState);
+  //       //check if gamestate got updated.
+  //       //console.log(this.board)
+  //       //console.log(this.minimaxService.currentGamestate.getBoard())
+
+
+  //       // make AI play
+  //       console.log("Handing over to AI")
+  //       let AIreturnedGamestate;
+  //       if(this.minimaxService.currentGamestate.countWhiteInOpponentCamp() > 15) {
+  //         AIreturnedGamestate = new AlphaBeta().runAlphaBeta(this.minimaxService.currentGamestate, 2);
+  //       }
+  //       else {
+  //         AIreturnedGamestate = new AlphaBeta().runAlphaBeta(this.minimaxService.currentGamestate, 2);
+  //       }
+  //       console.log("AI returned: ", AIreturnedGamestate.getBoard())
+
+  //       // update gamestate again and display.
+  //       this.minimaxService.updateGameState(AIreturnedGamestate);
+  //       this.minimaxService.currentGamestate.setPlayer("BLACK");
+  //       this.updateBoard(this.minimaxService.currentGamestate.getBoard());
+
+  //       this.firstClick = true;
+  //       this.candidatePawnPosition = null;
+
+  //       // GAME OVER STATE
+  //       if(this.minimaxService.currentGamestate.countWhiteInOpponentCamp() == 19) {
+  //         // popup modal on who won.
+  //       }
+
+  //     }
+  //     else if(this.board[i][j] != '.') {
+  //       this.firstClick = true;
+  //       this.buttonOnClick(i, j);
+  //     }
+  //     else {
+  //       // clicked on empty.
+  //     }
+  //   }
+  // }
 }

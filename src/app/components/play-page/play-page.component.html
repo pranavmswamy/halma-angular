@@ -8,13 +8,22 @@
         <table class="mx-auto">
             <tr *ngFor="let x of boardIterate; let i=index">
                 <td *ngFor="let y of boardIterate; let j=index"> 
-                    <button [ngClass]='{ "tile-button": true, "normal-bg": !highlighted[i][j], "highlighted": highlighted[i][j]}' (click)="buttonOnClick(i, j)">
-                        <div [ngClass]="{   'black-pawn': board[i][j] == 'B', 
+                    <button [ngClass]='{ "tile-button": true, 
+                                         "normal-bg": !highlighted[i][j] && !home_camp[i][j],
+                                         "home-camp-bg": home_camp[i][j],
+                                         "highlighted": highlighted[i][j],
+                                         "button-dim": true}' 
+                                         
+                                         (click)="buttonOnClick(i, j)">
+                        
+                                         <div [ngClass]="{   'black-pawn': board[i][j] == 'B', 
                                             'white-pawn': board[i][j] == 'W',
+                                            'no-pawn': board[i][j] == '.',
                                             'mx-2': true,
                                             'my-2': true}">
-                            <p class="transparent"> {{ board[i][j] }} </p>
+                                        <p class="transparent"> OO </p>
                         </div>
+                        
                     </button>
                 </td>
             </tr>
